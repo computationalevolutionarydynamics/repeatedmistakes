@@ -40,6 +40,9 @@ def test_alld_passAnyHistory_returnsD(s):
 def test_titForTat_passEmptyHistory_strategyCooperates(s):
     assert strategies.tit_for_tat(s) == 'c'
 
+@given(text(alphabet='cd', min_size=1))
+def test_titForTat_passHistory_strategyReturnsLastElement(s):
+    assert strategies.tit_for_tat(s) == s[-1]
 
 if __name__ == '__main__':
     nose.main()
