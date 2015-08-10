@@ -3,7 +3,7 @@ Contains functions used to simulate different scenarios involving the iterated p
 """
 import random
 
-def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_probability, trials=1000):
+def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_probability, trials=1000, seed=1234):
     """
     Calculate the expected payoff for a particular strategy and opponent in the iterated prisoner's dilemma
 
@@ -26,7 +26,7 @@ def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_proba
         expected_payoff (float): The expected payoff for the player
     """
     # Seed the RNG
-    random.seed(1234)
+    random.seed(seed)
     total_payoff = 0
 
     # We want trials number of games
