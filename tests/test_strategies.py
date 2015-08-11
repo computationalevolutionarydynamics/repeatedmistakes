@@ -61,5 +61,48 @@ def test_inverseTitForTat_passHistory_strategyReturnsOppositeOfLastElement(s):
     else:
         assert strategies.inverse_tit_for_tat(s) == 'c'
 
+@given(just(''))
+def test_niceAlld_passEmptyHistory_strategyCooperates(s):
+    """Test that nice alld cooperates on the first turn"""
+    assert strategies.nice_alld(s) == 'c'
+
+@given(text(alphabet='cd', min_size=1))
+def test_niceAlld_passHistory_strategyDefects(s):
+    """Test that nice alld defects in every turn except for the first"""
+    assert strategies.nice_alld(s) == 'd'
+
+@given(just(''))
+def test_suspiciousAllc_passEmptyHistory_strategyDefects(s):
+    """Test that suspicious allc defects on the first turn"""
+    assert strategies.suspicious_allc(s) == 'd'
+
+@given(text(alphabet='cd', min_size=1))
+def test_suspciciousAllc_passHistory_strategyCooperates(s):
+    """Test that suspicious allc cooperates on every turn except the first"""
+    assert strategies.suspicious_allc(s) == 'c'
+
+@given(just(''))
+def test_suspiciousTitForTat_passEmptyHistory_strategyDefects(s):
+    """Test that suspicious tit for tat defects on the first turn"""
+    assert strategies.suspicious_tit_for_tat(s) == 'd'
+
+@given(text(alphabet='cd', min_size=1))
+def test_suspiciousTitForTat_passHistory_strategyReturnsLastElement(s):
+    """Test that suspicious tit for tat returns the last element the opponent played"""
+    assert strategies.suspicious_tit_for_tat(s) == s[-1]
+
+@given(just(''))
+def test_inverseSuspiciousTitForTat_passEmptyHistory_strategyDefects(s):
+    """Test that inverse suspicious tit for tat defects on the first turn"""
+    assert strategies.inverse_suspicious_tit_for_tat(s) == 'd'
+
+@given(text(alphabet='cd', min_size=1))
+def test_inverseSuspiciousTitforTat_passHistory_strategyReturnsOppositeOfLastMove(s):
+    """Test that inverse suspicious tit for tat returns the opposite of the opponent's last move"""
+    if s[-1] == 'c':
+        assert strategies.inverse_suspicious_tit_for_tat(s) == 'd'
+    else:
+        assert strategies.inverse_suspicious_tit_for_tat(s) == 'c'
+
 if __name__ == '__main__':
     nose.main()
