@@ -48,5 +48,18 @@ def test_titForTat_passHistory_strategyReturnsLastElement(s):
     """Test that tit for tat returns the opponent's last move on any turn but the first"""
     assert strategies.tit_for_tat(s) == s[-1]
 
+@given(just(''))
+def test_inverseTitForTat_passEmptyHistory_strategyCooperates(s):
+    """Test that inverse tit for tat cooperates on the first move"""
+    assert strategies.inverse_tit_for_tat(s) == 'c'
+
+@given(text(alphabet='cd', min_size=1))
+def test_inverseTitForTat_passHistory_strategyReturnsOppositeOfLastElement(s):
+    """Test that inverse tit for tat returns the opposite of the last move on any turn but the first"""
+    if s[-1] == 'c':
+        assert strategies.inverse_tit_for_tat(s) == 'd'
+    else:
+        assert strategies.inverse_tit_for_tat(s) == 'c'
+
 if __name__ == '__main__':
     nose.main()
