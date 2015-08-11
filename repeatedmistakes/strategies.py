@@ -174,9 +174,9 @@ def suspicious_tit_for_tat(history):
         last_move = history[-1]
         return last_move.lower()
 
-def suspcious_inverse_tit_for_tat(history):
+def inverse_suspicious_tit_for_tat(history):
     """
-    The suspicious inverse tit for tat strategy defects on the first round, then does the opposite of what the opponent
+    The inverse suspicious tit for tat strategy defects on the first round, then does the opposite of what the opponent
     did last round
 
     Args:
