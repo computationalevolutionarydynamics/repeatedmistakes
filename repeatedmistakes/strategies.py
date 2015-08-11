@@ -72,3 +72,31 @@ def alld(history):
         raise ValueError('History string must consist of only cs and ds')
 
     return 'd'
+
+def inverse_tit_for_tat(history):
+    """
+    The inverse tit for tat strategy cooperates on the first round, then does the opposite of what the opponent did last
+
+    Args:
+        history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
+
+    Returns:
+        A c or a d
+
+    Raises:
+        ValueError: If a character in the input is not recognized
+    """
+    # Make sure the history is a valid history string
+    if not valid_history(history):
+        raise ValueError('History string must consist of only cs and ds')
+
+    # If the history is empty, cooperate
+    if history == '':
+        return 'c'
+    else:
+        # Return the opposite of the opponent's last move
+        last_move = history[-1].lower()
+        if last_move == 'c':
+            return 'd'
+        else:
+            return 'c'
