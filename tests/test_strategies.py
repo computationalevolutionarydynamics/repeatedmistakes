@@ -17,31 +17,35 @@ def check_returnsCsAndds(s, strategy):
 
 @given(text(alphabet='cd'))
 def test_strategy_passHistoryTextContainingCsAndDs_returnsCsAndDs(s):
-    """Ensure that when a history string is passed, all we get back is either a c or a d"""
+    """Test that when a history string is passed, all we get back is either a c or a d"""
     for strategy in strategy_list:
         yield check_returnsCsAndds, s, strategy
 
 @given(text(alphabet='CD'))
 def test_strategy_passHistoryTextContainingUpperCase_returnsCsAndDs(s):
-    """Ensure that when a history string is passed with uppercase history, all we get back is either a c or a d"""
+    """Test that when a history string is passed with uppercase history, all we get back is either a c or a d"""
     for strategy in strategy_list:
         yield check_returnsCsAndds, s, strategy
 
 # Test individual strategies to make sure that they return the correct value as per their desired behaviour
 @given(text(alphabet='cd'))
 def test_allc_passAnyHistory_returnsC(s):
+    """Test that allc always returns a c for any history"""
     assert strategies.allc(s) == 'c'
 
 @given(text(alphabet='cd'))
 def test_alld_passAnyHistory_returnsD(s):
+    """Test that alld always returns a d for any history"""
     assert strategies.alld(s) == 'd'
 
 @given(just(''))
 def test_titForTat_passEmptyHistory_strategyCooperates(s):
+    """Test that tit for tat cooperates on the first turn"""
     assert strategies.tit_for_tat(s) == 'c'
 
 @given(text(alphabet='cd', min_size=1))
 def test_titForTat_passHistory_strategyReturnsLastElement(s):
+    """Test that tit for tat returns the opponent's last move on any turn but the first"""
     assert strategies.tit_for_tat(s) == s[-1]
 
 if __name__ == '__main__':
