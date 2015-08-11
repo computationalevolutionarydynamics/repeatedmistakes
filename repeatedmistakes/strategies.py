@@ -100,3 +100,105 @@ def inverse_tit_for_tat(history):
             return 'd'
         else:
             return 'c'
+
+def nice_alld(history):
+    """
+    The nice alld strategy cooperates in the first round, then defects in every other round
+
+    Args:
+       history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
+
+    Returns:
+        A c or a d
+
+    Raises:
+        ValueError: If a character in the input is not recognized
+    """
+    # Make sure the history is a valid history string
+    if not valid_history(history):
+        raise ValueError('History string must consist of only cs and ds')
+
+    # If the history string is empty, cooperate
+    if history == '':
+        return 'c'
+    else:
+        # defect
+        return 'd'
+
+def suspicious_allc(history):
+    """
+    The suspicious allc strategy defects in the first round, then cooperates in every other round
+
+    Args:
+       history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
+
+    Returns:
+        A c or a d
+
+    Raises:
+        ValueError: If a character in the input is not recognized   Args:
+    """
+    # Make sure the history is a valid history string
+    if not valid_history(history):
+        raise ValueError('History string must consist of only cs and ds')
+
+    # If the history string is empty, defect
+    if history == '':
+        return 'd'
+    else:
+        # cooperate
+        return 'c'
+
+def suspicious_tit_for_tat(history):
+    """
+    The suspicious tit for tat strategy defects in the first round, then copies the opponent's last move
+
+     Args:
+       history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
+
+    Returns:
+        A c or a d
+
+    Raises:
+        ValueError: If a character in the input is not recognized   Args:
+    """
+    # Make sure the history is a valid history string
+    if not valid_history(history):
+        raise ValueError('History string must consist of only cs and ds')
+
+    # If the history string is empty, defect
+    if history == '':
+        return 'd'
+    else:
+        # Return the last element of the history
+        last_move = history[-1]
+        return last_move.lower()
+
+def suspcious_inverse_tit_for_tat(history):
+    """
+    The suspicious inverse tit for tat strategy defects on the first round, then does the opposite of what the opponent
+    did last round
+
+    Args:
+        history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
+
+    Returns:
+        A c or a d
+
+    Raises:
+        ValueError: If a character in the input is not recognized
+    """
+    # Make sure the history is a valid history string
+    if not valid_history(history):
+        raise ValueError('History string must consist of only cs and ds')
+
+    # If the history is empty, defect
+    if history == '':
+        return 'd'
+    else:
+        # Return the opposite of the opponent's last move
+        last_move = history[-1].lower()
+        if last_move == 'c':
+            return 'd'
+        else:
+            return 'c'
