@@ -3,6 +3,7 @@ Contains functions used to simulate different scenarios involving the iterated p
 """
 import random
 
+
 def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_probability, trials=1000, seed=1234):
     """
     Calculate the expected payoff for a particular strategy and opponent in the iterated prisoner's dilemma
