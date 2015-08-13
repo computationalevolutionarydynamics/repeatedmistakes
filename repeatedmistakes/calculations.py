@@ -2,11 +2,11 @@
 Contains functions that allow for the analysis of different strategies or combinations of strategies and for performing
 computations.
 """
-def calculate_expected_payoff(player, opponent, payoff_matrix, continuation_probability, epsilon):
+def calculate_normalised_payoff(player, opponent, payoff_matrix, continuation_probability, epsilon):
     """
-    Calculate the expected payoff for a particular strategy and opponent in the iterated prisoner's dilemma
+    Calculate the normalised payoff for a particular strategy and opponent in the iterated prisoner's dilemma
 
-    This method is used to calculate the expected value of the payoff when two strategies play each other in the
+    This method is used to calculate the normalised value of the payoff when two strategies play each other in the
     iterated prisoner's dilemma with a given payoff structure and continuation probability.
     The payoff is calculated via a sum, until the size of the term is less than some epsilon, at which point the sum
     is truncated and the result is returned.
@@ -23,7 +23,7 @@ def calculate_expected_payoff(player, opponent, payoff_matrix, continuation_prob
         epsilon (float): The minimum size of terms in the sum before the sum is truncated and the result is returned
 
     Returns:
-        expected_payoff (float): The expected payoff for the player
+        normalised_payoff (float): The normalised payoff for the player
 
     Raises:
         ValueError: If the continuation probability is greater than or equal to 1, as this would mean that the sum
@@ -32,7 +32,7 @@ def calculate_expected_payoff(player, opponent, payoff_matrix, continuation_prob
     if continuation_probability >= 1:
         raise ValueError('Continuation probability must be less than 1 for the sum to converge')
 
-    expected_payoff = 0
+    normalised_payoff = 0
     player_history = ''
     opponent_history = ''
 
@@ -50,6 +50,9 @@ def calculate_expected_payoff(player, opponent, payoff_matrix, continuation_prob
         payoff = payoff_matrix[player_move][opponent_move]
         # Compute the term from the sum
         term = (continuation_probability ** rounds) * payoff
-        expected_payoff += term
+        normalised_payoff += term
 
-    return expected_payoff
+    # Multiply by (1 - continuation_probability) to normalise the value
+    normalised_payoff = (1 - continuation_probability) * normalised_payoff
+
+    return normalised_payoff
