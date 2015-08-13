@@ -1,7 +1,7 @@
 """
 Contains functions used to simulate different scenarios involving the iterated prisoner's dilemma
 """
-import random
+from numpy.random import RandomState
 
 
 def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_probability, trials=1000, seed=1234):
@@ -26,8 +26,8 @@ def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_proba
     Returns:
         expected_payoff (float): The expected payoff for the player
     """
-    # Seed the RNG
-    random.seed(seed)
+    # Create an PRNG instance and seed it
+    random_instance = RandomState(seed)
     total_payoff = 0
 
     # We want trials number of games
@@ -52,7 +52,7 @@ def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_proba
 
             # Choose a random float between zero and one. If this is greater than the continuation probability, the game
             # stops
-            continue_game = random.random()
+            continue_game = random_instance.random_sample()
 
     # Divide the total payoff by the number of trials to give the expected payoff
     expected_payoff = total_payoff / trials
