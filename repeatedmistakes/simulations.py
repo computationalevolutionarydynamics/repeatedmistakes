@@ -32,7 +32,7 @@ def simulate_expected_payoff(player, opponent, payoff_matrix, continuation_proba
 
     # We want trials number of games
     for _ in range(trials):
-        continue_game = 0
+        continue_game = 0.
 
         # Reset the histories of each player
         player_history = ''
