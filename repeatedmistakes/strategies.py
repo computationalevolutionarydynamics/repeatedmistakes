@@ -104,3 +104,6 @@ class AllC(Strategy):
             C
         """
         return self.C
+
+# Keep a list of all of the strategies
+strategy_list = [AllC]
