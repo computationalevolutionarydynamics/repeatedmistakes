@@ -1,204 +1,83 @@
 """
-Contains functions that model strategies for playing the iterated prisoner's dilemma
+Contains classes that can be used to model strategies in the repeated prisoner's dilemma.
 
-Each function should take as input a string consisting of c's and d's that represents the history of the opponent's
-moves in a game of the iterated prisoner's dilemma, and return either a c or a d corresponding to that strategy's next
-move. Any input not of the form of string of cs or ds should raise a ValueError
-
-This module should not contain any non-strategy top-level callables, because the tests involve iterating over all of
-the callables and testing against them.
+All strategies should inherit from the Strategy abstract base class to make use of common functions like validation
+of histories and possibly other functions down the track
 """
-from repeatedmistakes.strategyutils import valid_history
+from abc import ABCMeta, abstractmethod
 
-def tit_for_tat(history):
-    """
-    The tit_for_tat strategy cooperates on the first round, and then plays whatever the opponent played last.
+class InvalidActionError(BaseException):
+    pass
 
-    Args:
-        history (string): A string consisting of cs or ds (case insensitive) that represents the opponents moves
+class HistoryLengthMismatch(BaseException):
+    pass
 
-    Returns:
-        A c or a d
+class Strategy:
+    __metaclass__ = ABCMeta
 
-    Raises:
-        ValueError: If a character in the input is not recognised
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
+    def __init__(self, C = 'C', D = 'D'):
+        """
+        Initialise the strategy's history to empty and define the symbols used to represent cooperation and defection
 
-    # If the history is empty, cooperate
-    if history == '':
-        return 'c'
-    else:
-        # Copy the opponent's last move
-        last_move = history[-1]
-        return last_move.lower()
+        Args:
+            C (string): The symbol to be used for representing cooperation. Defaults to 'C'.
+            D (string): The symbol to be used for representing defection. Defaults to 'D'.
+        """
+        self.history = []
+        self.C = C
+        self.D = D
 
-def allc(history):
-    """
-    The allc strategy always cooperates regardless of history.
+    def play(self, opponent_history):
+        """
+        Computes the next move given the opponent's history and updates the strategy's history.
 
-    Args:
-        history (string): A string consisting of cs or ds (case insensitive) that represents the opponents moves
+        This method performs checks on the opponent history it is given, and then computes what move the strategy makes
+        next and updates the history of this strategy with this move. The default implementation has no internal state,
+        however if any other state variables are used in child classes, these classes should call this method and return
+        the result as well as updating any state variables as needed.
 
-    Returns:
-        A c
+        Args:
+            opponent_history (string): This should be an iterable representing the history of the opponent's moves in
+                the format specified during construction. This should be the same length as the strategy's history.
 
-    Raises:
-        ValueError: If a character in the input is not recognised
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
+        Raises:
+            InvalidActionError: Raised if any of the items in the opponent_history do not match either self.C or
+                self.D
+            HistoryLengthMismatch: Raised if opponent_history is not of the same length as self.history. The reasoning
+                here is that if the opponent_history is shorter than our history, something probably went wrong since
+                the caller could just use this.history. If the opponent_history is longer than our history, the query
+                doesn't really make sense for the opponent because their moves should be dependant on what we do, and
+                it appears that they've already decided what to do.
 
-    return 'c'
+        Returns:
+            action: The action taken by the strategy, either a C or a D
+        """
+        if not all([move in [self.C, self.D] for move in opponent_history]):
+            raise InvalidActionError("Action must be either " + str(self.C) + " or " + str(self.D))
 
-def alld(history):
-    """
-    The alld strategy always cooperates regardless of history.
+        if len(opponent_history) != len(self.history):
+            raise HistoryLengthMismatch("Internal history was of length " + str(len(self.history)) + " and opponent" \
+                                        + " history was of length " + str(len(opponent_history)))
 
-    Args:
-        history (string): A string consisting of cs or ds (case insensitive) that represents the opponents moves
+        # Figure out the action
+        action = self.next_move(opponent_history)
+        self.history.append(action)
 
-    Returns:
-        A d
+        return action
 
-    Raises:
-        ValueError: If a character in the input is not recognised
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
+    @abstractmethod
+    def next_move(self, opponent_history):
+        """
+        This method should be implemented by child classes. This method should contain all logic for determining what
+        move the strategy should make, and should return this move. This method should not update the history or update
+        internal state.
+        """
 
-    return 'd'
+    def reset(self):
+        """
+        This method resets the state of the strategy to an empty history
 
-def inverse_tit_for_tat(history):
-    """
-    The inverse tit for tat strategy cooperates on the first round, then does the opposite of what the opponent did last
-
-    Args:
-        history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
-
-    Returns:
-        A c or a d
-
-    Raises:
-        ValueError: If a character in the input is not recognized
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
-
-    # If the history is empty, cooperate
-    if history == '':
-        return 'c'
-    else:
-        # Return the opposite of the opponent's last move
-        last_move = history[-1].lower()
-        if last_move == 'c':
-            return 'd'
-        else:
-            return 'c'
-
-def nice_alld(history):
-    """
-    The nice alld strategy cooperates in the first round, then defects in every other round
-
-    Args:
-       history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
-
-    Returns:
-        A c or a d
-
-    Raises:
-        ValueError: If a character in the input is not recognized
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
-
-    # If the history string is empty, cooperate
-    if history == '':
-        return 'c'
-    else:
-        # defect
-        return 'd'
-
-def suspicious_allc(history):
-    """
-    The suspicious allc strategy defects in the first round, then cooperates in every other round
-
-    Args:
-       history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
-
-    Returns:
-        A c or a d
-
-    Raises:
-        ValueError: If a character in the input is not recognized   Args:
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
-
-    # If the history string is empty, defect
-    if history == '':
-        return 'd'
-    else:
-        # cooperate
-        return 'c'
-
-def suspicious_tit_for_tat(history):
-    """
-    The suspicious tit for tat strategy defects in the first round, then copies the opponent's last move
-
-     Args:
-       history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
-
-    Returns:
-        A c or a d
-
-    Raises:
-        ValueError: If a character in the input is not recognized   Args:
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
-
-    # If the history string is empty, defect
-    if history == '':
-        return 'd'
-    else:
-        # Return the last element of the history
-        last_move = history[-1]
-        return last_move.lower()
-
-def inverse_suspicious_tit_for_tat(history):
-    """
-    The inverse suspicious tit for tat strategy defects on the first round, then does the opposite of what the opponent
-    did last round
-
-    Args:
-        history (string): A string consisting of cs or ds (case insensitive) that represents the opponent's moves
-
-    Returns:
-        A c or a d
-
-    Raises:
-        ValueError: If a character in the input is not recognized
-    """
-    # Make sure the history is a valid history string
-    if not valid_history(history):
-        raise ValueError('History string must consist of only cs and ds')
-
-    # If the history is empty, defect
-    if history == '':
-        return 'd'
-    else:
-        # Return the opposite of the opponent's last move
-        last_move = history[-1].lower()
-        if last_move == 'c':
-            return 'd'
-        else:
-            return 'c'
+        Any children of this class that use extra instance variables should override this method and reset instance
+        variable as necessary
+        """
+        self.history = []
