@@ -31,14 +31,28 @@ class Strategy:
         """
         Computes the next move given the opponent's history and updates the strategy's history.
 
-        This method performs checks on the opponent history it is given, and then computes what move the strategy makes
-        next and updates the history of this strategy with this move. The default implementation has no internal state,
-        however if any other state variables are used in child classes, these classes should call this method and return
-        the result as well as updating any state variables as needed.
+        This base class does not contain any instance variables relating the the strategy other than the history.
+        However if child classes need to store additional instance variables related to state, they should call this
+        method and then update any state accordinly before returning the result to the caller.
 
         Args:
-            opponent_history (string): This should be an iterable representing the history of the opponent's moves in
-                the format specified during construction. This should be the same length as the strategy's history.
+            opponent_history (iterable): An iterable representing the history of the opponent's moves.
+
+        Returns:
+            action: The action taken by the strategy, either a C or a D
+        """
+        # Figure out the action
+        action = self.next_move(opponent_history)
+        self.history.append(action)
+
+        return action
+
+    def next_move(self, opponent_history):
+        """
+        This method validates the history string and then gets the next move of the strategy.
+
+        Args:
+            opponent_history (iterable): An iterable representing the the history of the oppoentn's moves
 
         Raises:
             InvalidActionError: Raised if any of the items in the opponent_history do not match either self.C or
@@ -59,18 +73,15 @@ class Strategy:
             raise HistoryLengthMismatch("Internal history was of length " + str(len(self.history)) + " and opponent" \
                                         + " history was of length " + str(len(opponent_history)))
 
-        # Figure out the action
-        action = self.next_move(opponent_history)
-        self.history.append(action)
-
+        action = self._strategy(opponent_history)
         return action
 
     @abstractmethod
-    def next_move(self, opponent_history):
+    def _strategy(self, opponent_history):
         """
-        This method should be implemented by child classes. This method should contain all logic for determining what
-        move the strategy should make, and should return this move. This method should not update the history or update
-        internal state.
+        This method should be implemented by child classes and should contain logic for computing the next move
+
+        This method should not peform any update of internal state or history
         """
 
     def reset(self):
@@ -81,3 +92,17 @@ class Strategy:
         variable as necessary
         """
         self.history = []
+
+
+class AllC(Strategy):
+    """
+    A class implementing the AllC strategy that always cooperates
+    """
+    def _strategy(self, opponent_history):
+        """
+        This strategy always returns a C regardless of the opponent's move
+
+        Returns:
+            C
+        """
+        return self.C
