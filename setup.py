@@ -8,7 +8,6 @@ setup(
         'nose >= 1.3.7',
         'hypothesis >= 1.10.1',
         'numpy >= 1.9.2',
-        'pandas >= 0.16.2'
     ],
     url='https://github.com/computationalevolutionarydynamics/repeatedmistakes',
     license='GNU GPL v3 (see LICENSE)',
