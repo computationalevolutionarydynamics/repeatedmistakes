@@ -5,9 +5,9 @@ setup(
     version='0.1',
     packages=find_packages(),
     install_requires=[
-        'nose >= 1.3.7',
-        'hypothesis >= 1.10.1',
-        'numpy >= 1.9.2',
+        'nose',
+        'hypothesis',
+        'numpy',
     ],
     url='https://github.com/computationalevolutionarydynamics/repeatedmistakes',
     license='GNU GPL v3 (see LICENSE)',
