@@ -44,8 +44,8 @@ length_mistmatch_strategy = two_characters.flatmap(
                             )
 
 for strategy in strategies.strategy_list:
-    @given(length_mistmatch_strategy)
     @raises(strategies.HistoryLengthMismatch)
+    @given(length_mistmatch_strategy)
     def test_strategy_historyLengthMismatch_raisesHistoryLengthMistmatchException(s):
         """Test that if the history length doesn't match the opponent history length, an exception is raised"""
         # Assume that the lengths of the strings are not the same
