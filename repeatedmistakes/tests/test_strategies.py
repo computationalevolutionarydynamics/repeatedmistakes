@@ -47,11 +47,11 @@ for strategy in strategy_list:
     @given(length_mistmatch_strategy)
     def test_strategy_historyLengthMismatch_raisesHistoryLengthMistmatchException(s):
         """Test that if the history length doesn't match the opponent history length, an exception is raised"""
-        # Assume that the lengths of the strings are not the same
-        assume(not len(s[1]) == len(s[2]))
         characterset = s[0]
         history = s[1]
         opponent_history = s[2]
+        # Assume that the lengths of the histories are not the same
+        assume(not len(history) == len(opponent_history))
         # Create an object with the correct characterset
         test_object = strategy(C=characterset[0], D=characterset[1])
         # Set up the object's history
