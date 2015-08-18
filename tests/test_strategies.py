@@ -4,7 +4,7 @@ from inspect import isclass, isabstract
 import nose
 from nose.tools import raises
 
-import repeatedmistakes.strategies as strategies
+from repeatedmistakes import strategies
 """
 Test all of the strategies in the strategies module for common functionality
 """
