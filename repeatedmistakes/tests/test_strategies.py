@@ -59,5 +59,31 @@ for strategy in strategy_list:
         # Try and get the next move which should raise an error
         test_object.next_move(opponent_history)
 
+# We also want to test that if we pass an opponent history with invalid characters that an error is thrown
+# Define a strategy that will generate one random text with one characterset and another with a different characterset
+different_characterset_strategy = two_characters.flatmap(
+                                        lambda chars: integers(min_value=0).flatmap(
+                                            lambda n: tuples(just(chars), text(alphabet=chars, min_size=n, max_size=n),
+                                                             text(alphabet=two_characters, min_size=n, max_size=n))
+                                            )
+                                        )
+
+for strategy in strategy_list:
+    @raises(InvalidActionError)
+    @given(different_characterset_strategy)
+    def test_strategy_invalidCharactersPassed_raisesInvalidActionError(s):
+        """Test that if the opponent's history doesn't match the characterset, an InvalidActionError is thrown."""
+        characterset = s[0]
+        history = s[1]
+        opponent_history = s[2]
+        # Assume that the charactersets are not the same between the history and the opponent history
+        assume(set(characterset) != set(opponent_history))
+        # Create an object with the correct characterset
+        test_object = strategy(C=characterset[0], D=characterset[1])
+        # Set up the object's history
+        test_object.history = history
+        # Try and get the next move which should raise an error
+        test_object.next_move(opponent_history)
+
 if __name__ == '__main__':
     nose.main()
