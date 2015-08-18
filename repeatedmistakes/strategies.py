@@ -27,6 +27,18 @@ class Strategy(ABC):
         self.C = C
         self.D = D
 
+    @property
+    def history(self):
+        return self.history
+
+    @history.setter
+    def history(self, new_history):
+        if set(new_history) == {self.C, self.D}:
+            self.history = new_history
+        else:
+            raise InvalidActionError("New history \n" + str(new_history) + "\n does not match the current " +
+                                     "characterset\nC = " + str(self.C) + ", D = " + str(self.D))
+
     def play(self, opponent_history):
         """
         Computes the next move given the opponent's history and updates the strategy's history.
