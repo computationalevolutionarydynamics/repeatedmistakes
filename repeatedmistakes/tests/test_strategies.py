@@ -3,7 +3,7 @@ from hypothesis.strategies import text, just, integers, tuples
 import nose
 from nose.tools import raises
 
-from repeatedmistakes.strategies import strategy_list, HistoryLengthMismatch
+from repeatedmistakes.strategies import *
 """
 Test all of the strategies in the strategies module for common functionality
 """
