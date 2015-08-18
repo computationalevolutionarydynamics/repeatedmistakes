@@ -1,6 +1,5 @@
 from hypothesis import given, assume
 from hypothesis.strategies import text, just, integers, tuples
-from inspect import isclass, isabstract
 import nose
 from nose.tools import raises
 
