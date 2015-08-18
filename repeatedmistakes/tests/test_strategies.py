@@ -85,5 +85,24 @@ for strategy in strategy_list:
         # Try and get the next move which should raise an error
         test_object.next_move(opponent_history)
 
+# We want to test that if we pass a new history to a strategy with a different characterset, an exception is thrown
+# We need to define a strategy to generate two different charactersets, and a history made of the second one
+different_history_characterset_strategy = tuples(two_characters, two_characters).flatmap(
+                                            lambda tup: tuples(just(tup[0]), text(alphabet=tup[1])))
+
+for strategy in strategy_list:
+    @raises(InvalidActionError)
+    @given(different_history_characterset_strategy)
+    def test_strategy_historyWithWrongCharacterset_raisesInvalidActionError(s):
+        """Test that if you pass a history with the wrong characterset, an InvalidActionError is thrown."""
+        characterset = s[0]
+        history = s[1]
+        # Assume that the history characterset isn't a subset of the characterset
+        assume(not set(history) <= set(characterset))
+        # Set up the object
+        test_object = strategy(C=characterset[0], D=characterset[1])
+        # Try and pass a history which should raise an error
+        test_object.history = history
+
 if __name__ == '__main__':
     nose.main()
