@@ -29,12 +29,12 @@ class Strategy(ABC):
 
     @property
     def history(self):
-        return self.history
+        return self._history
 
     @history.setter
     def history(self, new_history):
         if set(new_history) <= {self.C, self.D}:
-            self.history = new_history
+            self._history = new_history
         else:
             raise InvalidActionError("New history \n" + str(new_history) + "\n does not match the current " +
                                      "characterset\nC = " + str(self.C) + ", D = " + str(self.D))
