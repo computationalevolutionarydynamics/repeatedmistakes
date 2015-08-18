@@ -23,9 +23,9 @@ class Strategy(ABC):
             C (string): The symbol to be used for representing cooperation. Defaults to 'C'.
             D (string): The symbol to be used for representing defection. Defaults to 'D'.
         """
-        self.history = []
         self.C = C
         self.D = D
+        self.history = []
 
     @property
     def history(self):
