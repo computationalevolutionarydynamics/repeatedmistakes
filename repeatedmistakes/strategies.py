@@ -119,5 +119,20 @@ class AllC(Strategy):
         """
         return self.C
 
+
+class AllD(Strategy):
+    """
+    A class implementing the AllD strategy that always defects
+    """
+    def _strategy(self, opponent_history):
+        """
+        This strategy always returns a D regardless of the opponent's move
+
+        Returns:
+            D
+        """
+        return self.D
+
+
 # Keep a list of all of the strategies
-strategy_list = [AllC]
+strategy_list = [AllC, AllD]
