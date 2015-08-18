@@ -9,11 +9,13 @@ from abc import ABC, abstractmethod
 class InvalidActionError(BaseException):
     pass
 
+
 class HistoryLengthMismatch(BaseException):
     pass
 
+
 class Strategy(ABC):
-    def __init__(self, C = 'C', D = 'D'):
+    def __init__(self, C='C', D='D'):
         """
         Initialise the strategy's history to empty and define the symbols used to represent cooperation and defection
 
