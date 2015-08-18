@@ -3,7 +3,7 @@ from hypothesis.strategies import text, just, integers, tuples
 import nose
 from nose.tools import raises
 
-from repeatedmistakes import strategies
+from repeatedmistakes.strategies import strategy_list, HistoryLengthMismatch
 """
 Test all of the strategies in the strategies module for common functionality
 """
@@ -22,7 +22,7 @@ valid_history_strategy = two_characters.flatmap(
                         )
                     )
 
-for strategy in strategies.strategy_list:
+for strategy in strategy_list:
     @given(valid_history_strategy)
     def test_strategy_passedCharactersetAndHistories_returnsCharacterInCharacterset(s):
         """Test that if we pass a characterset and histories to a strategy, it only returns actions in that characterset"""
@@ -42,8 +42,8 @@ length_mistmatch_strategy = two_characters.flatmap(
                                 lambda chars: tuples(just(chars), text(alphabet=chars), text(alphabet=chars))
                             )
 
-for strategy in strategies.strategy_list:
-    @raises(strategies.HistoryLengthMismatch)
+for strategy in strategy_list:
+    @raises(HistoryLengthMismatch)
     @given(length_mistmatch_strategy)
     def test_strategy_historyLengthMismatch_raisesHistoryLengthMistmatchException(s):
         """Test that if the history length doesn't match the opponent history length, an exception is raised"""
