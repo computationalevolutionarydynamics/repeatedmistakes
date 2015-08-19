@@ -104,5 +104,18 @@ for strategy in strategy_list:
         # Try and pass a history which should raise an error
         test_object.history = history
 
+"""
+Individual strategy tests
+"""
+@given(valid_history_strategy)
+def test_AllC_passAnyHistory_ReturnsC(s):
+    """Test that AllC always returns a C regardless of history or input"""
+    characterset = s[0]
+    history = s[1]
+    opponent_history = s[2]
+    test_object = AllC(C=characterset[0], D=characterset[1])
+    test_object.history = history
+    assert test_object.next_move(opponent_history) == test_object.C
+
 if __name__ == '__main__':
     nose.main()
