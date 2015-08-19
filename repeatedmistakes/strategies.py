@@ -173,5 +173,17 @@ class SuspiciousInverseTitForTat(Strategy):
             else:
                 return self.C
 
+
+class NiceAllD(Strategy):
+    """
+    A class implementing the nice alld strategy. This strategy cooperates in the first round and then defects for all
+    other rounds.
+    """
+    def _strategy(self, opponent_history):
+        if self.history == []:
+            return self.C
+        else:
+            return self.D
+
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat]
