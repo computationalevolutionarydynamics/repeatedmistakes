@@ -56,7 +56,7 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
         normalised_payoff[strategy_two] += player_two_term
 
     # Multiply by (1 - continuation_probability) to normalise the value
-    normalised_payoff[player_one] *= (1 - continuation_probability)
-    normalised_payoff[player_two] *= (1 - continuation_probability)
+    normalised_payoff[strategy_one] *= (1 - continuation_probability)
+    normalised_payoff[strategy_two] *= (1 - continuation_probability)
 
     return normalised_payoff
