@@ -45,8 +45,8 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
         # We want to repeat until we pick a random number that's greater than the continuation probability
         while continue_game < continuation_probability:
             # Figure out what move each player plays
-            move_one = player_one(player_two.history)
-            move_two = player_two(player_one.history)
+            move_one = player_one.next_move(player_two.history)
+            move_two = player_two.next_move(player_one.history)
             # Add these moves to each player's history
             player_one.history += move_one
             player_two.history += move_two
