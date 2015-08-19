@@ -117,5 +117,15 @@ def test_AllC_passAnyHistory_ReturnsC(s):
     test_object.history = history
     assert test_object.next_move(opponent_history) == test_object.C
 
+@given(valid_history_strategy)
+def test_AllD_passAnyHistory_ReturnsD(s):
+    """Test that AllD always returns a D regardless of history or input"""
+    characterset = s[0]
+    history = s[1]
+    opponent_history = s[2]
+    test_object = AllD(C=characterset[0], D=characterset[1])
+    test_object.history = history
+    assert test_object.next_move(opponent_history) == test_object.D
+
 if __name__ == '__main__':
     nose.main()
