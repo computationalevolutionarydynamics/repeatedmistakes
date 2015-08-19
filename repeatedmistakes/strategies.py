@@ -127,5 +127,20 @@ class TitForTat(Strategy):
             else:
                 return self.C
 
+
+class InverseTitForTat(Strategy):
+    """
+    A class implementing the inverse tit for tat strategy. This strategy cooperates in the first round and then does
+    the opposite of the opponent's last move thereafter
+    """
+    def _strategy(self, opponent_history):
+        if self.history == []:
+            return self.C
+        else:
+            if opponent_history[-1] == self.C:
+                return self.D
+            else:
+                return self.C
+
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat]
