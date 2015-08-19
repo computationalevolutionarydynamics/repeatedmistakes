@@ -1,4 +1,5 @@
 from repeatedmistakes.simulations import simulate_normalised_payoff
+from repeatedmistakes.strategies import InvalidActionError
 
 class RepeatedGame:
     """
@@ -51,3 +52,58 @@ class RepeatedGame:
         """
         return simulate_normalised_payoff(self.strategy_one, self.strategy_two, payoff_matrix,
                                           continuation_probability, trials, seed)
+
+
+class PayoffMatrix:
+    """
+    A class that gives the payoffs for a round of the iterated prisoner's dilemma
+
+    Vars:
+        C (str): The symbol that represents cooperation
+        D (str): The symbol that represents defection
+        CC (float): The payoffs for each player if they both cooperate
+        CD (float): The payoffs for each player if player one cooperates and the other defects
+        DC (float): The payoffs for each player if player one defects and the other cooperates
+        DD (float): The payoffs for each player if both players defect
+    """
+    def __init__(self, C='C', D='D', CC=(2,2), CD=(0,3), DC=(3,0), DD=(1,1)):
+        self.C = C
+        self.D = D
+        self.CC = CC
+        self.DD = DD
+        self.CD = CD
+        self.DC = DC
+
+    def payoff(self, player_one, player_two):
+        if player_one == self.C:
+            if player_two == self.C:
+                return self.CC
+            elif player_two == self.D:
+                return self.CD
+        elif player_one == self.D:
+            if player_two == self.C:
+                return self.DC
+            elif player_two == self.D:
+                return self.DD
+        else:
+            raise InvalidActionError("Moves not in the characterset of this payoff matrix were passed.")
+
+
+class PrisonersDilemmaPayoff(PayoffMatrix):
+    """
+    A class that models the payoff structure of the prisoner's dilemma
+
+    Vars:
+        C (str): As PayoffMatrix
+        D (str): As PayoffMatrix
+        P (float): The punishment both players receive if they defect
+        R (float): The reward both players receive if they cooperate
+        T (float): The temptation the defector receives if the other player cooperates
+        S (float): The sucker prize the cooperator receives if the other player defects
+    """
+    def __init__(self, C='C', D='D', P=1, R=2, S=0, T=3):
+        super().__init__(C=C, D=D, CC=(R,R), CD=(S,T), DC=(T,S), DD=(P,P))
+        self.P = P
+        self.T = T
+        self.R = R
+        self.S = S
