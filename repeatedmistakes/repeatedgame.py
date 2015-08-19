@@ -1,3 +1,5 @@
+from repeatedmistakes.simulations import simulate_normalised_payoff
+
 class RepeatedGame:
     """
     A class for modelling a repeated game between two players, with functions for simulation and calculation of results
@@ -36,3 +38,16 @@ class RepeatedGame:
         # Construct the result dictionary
         results = {self.strategy_one: player_one.history, self.strategy_two: player_two.history}
         return results
+
+    def simulate_normalised_payoff(self, payoff_matrix, continuation_probability, trials=1000, seed=1234):
+        """
+        Compute the normalised payoff of each strategy using a monte carlo method.
+
+        Args:
+            As per simulations.simulate_normalised_payoff
+
+        Returns:
+            As per simulations.simulate_normalised_payoff
+        """
+        return simulate_normalised_payoff(self.strategy_one, self.strategy_two, payoff_matrix,
+                                          continuation_probability, trials, seed)
