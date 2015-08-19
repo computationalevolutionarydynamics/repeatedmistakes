@@ -113,6 +113,19 @@ class AllD(Strategy):
         """
         return self.D
 
+class TitForTat(Strategy):
+    """
+    A class implementing the tit for tat strategy. This strategy cooperates in the first round and the copies the
+    opponent thereafter
+    """
+    def _strategy(self, opponent_history):
+        if self.history == []:
+            return self.C
+        else:
+            if opponent_history[-1] == self.C:
+                return self.D
+            else:
+                return self.C
 
 # Keep a list of all of the strategies
-strategy_list = [AllC, AllD]
+strategy_list = [AllC, AllD, TitForTat]
