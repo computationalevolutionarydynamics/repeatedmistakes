@@ -48,7 +48,7 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
         player_one.history += move_one
         player_two.history += move_two
         # Get the payoff resulting from the last game
-        player_one_payoff, player_two_payoff = payoff_matrix(player_one=move_one, player_two=move_two)
+        player_one_payoff, player_two_payoff = payoff_matrix.payoff(player_one=move_one, player_two=move_two)
         # Compute the term from the sum
         player_one_term = (continuation_probability ** rounds) * player_one_payoff
         player_two_term = (continuation_probability ** rounds) * player_two_payoff
