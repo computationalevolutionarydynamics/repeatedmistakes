@@ -158,5 +158,20 @@ class SuspiciousTitForTat(Strategy):
             else:
                 return self.D
 
+
+class SuspiciousInverseTitForTat(Strategy):
+    """
+    A class implementing the suspicious inverse tit for tat strategy. This strategy defects in the first round and
+    then does the opposite of the opponent's last move thereafter
+    """
+    def _strategy(self, opponent_history):
+        if self.history == []:
+            return self.D
+        else:
+            if opponent_history[-1] == self.C:
+                return self.D
+            else:
+                return self.C
+
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat]
