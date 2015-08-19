@@ -104,6 +104,17 @@ for strategy in strategy_list:
         # Try and pass a history which should raise an error
         test_object.history = history
 
+# We want to test that given any history, the reset method will return the strategy's history to empty
+for strategy in strategy_list:
+    @given(two_characters.flatmap(lambda chars: tuples(just(chars), text(alphabet=chars))))
+    def test_strategy_passHistoryThenReset_historyIsEmpty(s):
+        """Test that regardless of characterset or history, reset clears the history"""
+        characterset = s[0]
+        history = s[1]
+        test_object = strategy(C=characterset[0], D=characterset[1])
+        test_object.history = history
+        test_object.reset()
+        assert test_object.history == []
 """
 Individual strategy tests
 """
