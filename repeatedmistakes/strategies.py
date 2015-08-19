@@ -39,26 +39,6 @@ class Strategy(ABC):
             raise InvalidActionError("New history \n" + str(new_history) + "\n does not match the current " +
                                      "characterset\nC = " + str(self.C) + ", D = " + str(self.D))
 
-    def play(self, opponent_history):
-        """
-        Computes the next move given the opponent's history and updates the strategy's history.
-
-        This base class does not contain any instance variables relating the the strategy other than the history.
-        However if child classes need to store additional instance variables related to state, they should call this
-        method and then update any state accordinly before returning the result to the caller.
-
-        Args:
-            opponent_history (iterable): An iterable representing the history of the opponent's moves.
-
-        Returns:
-            action: The action taken by the strategy, either a C or a D
-        """
-        # Figure out the action
-        action = self.next_move(opponent_history)
-        self.history.append(action)
-
-        return action
-
     def next_move(self, opponent_history):
         """
         This method validates the history string and then gets the next move of the strategy.
