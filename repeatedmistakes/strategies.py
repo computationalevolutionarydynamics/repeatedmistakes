@@ -123,9 +123,9 @@ class TitForTat(Strategy):
             return self.C
         else:
             if opponent_history[-1] == self.C:
-                return self.D
-            else:
                 return self.C
+            else:
+                return self.D
 
 
 class InverseTitForTat(Strategy):
