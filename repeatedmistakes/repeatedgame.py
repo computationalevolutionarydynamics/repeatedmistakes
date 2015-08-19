@@ -1,4 +1,4 @@
-class RepeatedGamne:
+class RepeatedGame:
     """
     A class for modelling a repeated game between two players, with functions for simulation and calculation of results
     """

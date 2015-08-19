@@ -2,7 +2,7 @@
 Tests for the repeated game class
 """
 from repeatedmistakes import strategies
-from repeatedmistakes.repeatedgame import RepeatedGamne
+from repeatedmistakes.repeatedgame import RepeatedGame
 
 from hypothesis import given
 from hypothesis.strategies import sampled_from, integers
@@ -15,7 +15,7 @@ import nose
 
 def test_repeatedGameSimulate_passStrategiesAndNumberOfRounds_ReturnedHistoriesMatchInLength(strat1, strat2, rounds):
     """Test that any simulating any number of rounds with any strategies gives results of the correct length"""
-    game = RepeatedGamne(strat1, strat2)
+    game = RepeatedGame(strat1, strat2)
     results = game.simulate(rounds)
     assert len(results[strat1]) == rounds
     assert len(results[strat2]) == rounds
