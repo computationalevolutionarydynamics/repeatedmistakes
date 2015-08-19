@@ -185,5 +185,18 @@ class NiceAllD(Strategy):
         else:
             return self.D
 
+
+class SuspiciousAllC(Strategy):
+    """
+    A class implementing the suspicious allc strategy. This strategy defects in the first round and the cooperates
+    for all other rounds.
+    """
+    def _strategy(self, opponent_history):
+        if self.history == []:
+            return self.D
+        else:
+            return self.C
+
+
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat]
