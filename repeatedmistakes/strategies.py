@@ -199,4 +199,5 @@ class SuspiciousAllC(Strategy):
 
 
 # Keep a list of all of the strategies
-strategy_list = [AllC, AllD, TitForTat]
+strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
+                 SuspiciousAllC]
