@@ -39,7 +39,7 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
     player_two_term = float('inf')
     # Set the rounds coutner to -1 so that the first round will be round 0
     rounds = -1
-    while player_one_term > epsilon or player_two_term > epsilon:
+    while abs(player_one_term) > epsilon or abs(player_two_term) > epsilon:
         rounds += 1
         # Compute the moves that each strategy makes
         move_one = player_one.next_move(player_two.history)
