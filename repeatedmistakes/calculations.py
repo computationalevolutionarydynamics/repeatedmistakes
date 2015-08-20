@@ -2,8 +2,6 @@
 Contains functions that allow for the analysis of different strategies or combinations of strategies and for performing
 computations.
 """
-import numpy as np
-
 def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, epsilon):
     """
     Calculate the normalised payoff for strategies in the iterated prisoner's dilemma
@@ -37,8 +35,8 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
     player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
 
-    player_one_term = np.Infinity
-    player_two_term = np.Infinity
+    player_one_term = float('inf')
+    player_two_term = float('inf')
     # Set the rounds coutner to -1 so that the first round will be round 0
     rounds = -1
     while player_one_term > epsilon or player_two_term > epsilon:
