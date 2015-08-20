@@ -74,49 +74,23 @@ single_result_combos = [(AllC, AllC),
 
 # And their corresponding expected values. Since we're pulling these from the payoff matrix, we're going to have to
 # phrase them as lambda functions and then use each of them on the payoff matrix object
-single_result_values = [lambda x: x.R,
-                        lambda x: x.R,
-                        lambda x: x.S,
-                        lambda x: x.S,
-                        lambda x: x.R,
-                        lambda x: x.R,
-                        lambda x: x.S,
-                        lambda x: x.S,
-                        lambda x: x.P,
-                        lambda x: x.P,
-                        lambda x: x.T,
-                        lambda x: x.T,
-                        lambda x: x.T,
-                        lambda x: x.T,
-                        lambda x: x.P,
-                        lambda x: x.P
+single_result_values = [lambda matrix, delta: matrix.R,
+                        lambda matrix, delta: matrix.R,
+                        lambda matrix, delta: matrix.S,
+                        lambda matrix, delta: matrix.S,
+                        lambda matrix, delta: matrix.R,
+                        lambda matrix, delta: matrix.R,
+                        lambda matrix, delta: matrix.S,
+                        lambda matrix, delta: matrix.S,
+                        lambda matrix, delta: matrix.P,
+                        lambda matrix, delta: matrix.P,
+                        lambda matrix, delta: matrix.T,
+                        lambda matrix, delta: matrix.T,
+                        lambda matrix, delta: matrix.T,
+                        lambda matrix, delta: matrix.T,
+                        lambda matrix, delta: matrix.P,
+                        lambda matrix, delta: matrix.P
                         ]
-
-small_float = floats(min_value=-1e10, max_value=1e10)
-# We need to provide each one with four random values for the payoff matrix and a continuation probability
-@given(payoff_values=tuples(small_float, small_float, small_float, small_float), delta=floats(min_value=0.01, max_value=0.99))
-def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
-    """Test that single result combinations produce the correct expected values"""
-    # We need to assume a few things, namely, that the floats are not infinities or nans
-    for value in payoff_values:
-        assume(not isnan(value))
-    # Finally, the test. We need to iterate over each of the result combos
-    for index, combo in enumerate(single_result_combos):
-        # Construct the payoff matrix
-        payoff_matrix = PrisonersDilemmaPayoff(P=payoff_values[0], R=payoff_values[1],
-                                               S=payoff_values[2], T=payoff_values[3])
-        first_strategy = combo[0]
-        second_strategy = combo[1]
-        # Get the expected result
-        expected_result = single_result_values[index](payoff_matrix)
-        # Compute the result (throw away the result for the other strategy)
-        actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
-        # See if they match, within a percentage of tolerance. If the expected result is very small just use the
-        # difference itself
-        if abs(expected_result) > TOLERANCE:
-            assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
-        else:
-            assert abs(expected_result - actual_result) <= TOLERANCE
 
 # Now we will move on to testing the combinations that produce different behaviour in the first round, and then
 # the same after that
@@ -162,6 +136,35 @@ round_one_different_values = [lambda matrix, delta: first_round_distinct(matrix.
                               lambda matrix, delta: first_round_distinct(matrix.P, matrix.T, delta),
                               lambda matrix, delta: first_round_distinct(matrix.P, matrix.T, delta),
                               ]
+
+strategy_combinations = single_result_combos + round_one_different_combos
+results_list = single_result_values + round_one_different_values
+
+small_float = floats(min_value=-1e10, max_value=1e10)
+# We need to provide each one with four random values for the payoff matrix and a continuation probability
+@given(payoff_values=tuples(small_float, small_float, small_float, small_float), delta=floats(min_value=0.01, max_value=0.99))
+def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
+    """Test that single result combinations produce the correct expected values"""
+    # We need to assume a few things, namely, that the floats are not infinities or nans
+    for value in payoff_values:
+        assume(not isnan(value))
+    # Finally, the test. We need to iterate over each of the result combos
+    for index, combo in enumerate(strategy_combinations):
+        # Construct the payoff matrix
+        payoff_matrix = PrisonersDilemmaPayoff(P=payoff_values[0], R=payoff_values[1],
+                                               S=payoff_values[2], T=payoff_values[3])
+        first_strategy = combo[0]
+        second_strategy = combo[1]
+        # Get the expected result
+        expected_result = results_list[index](payoff_matrix, delta)
+        # Compute the result (throw away the result for the other strategy)
+        actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
+        # See if they match, within a percentage of tolerance. If the expected result is very small just use the
+        # difference itself
+        if abs(expected_result) > TOLERANCE:
+            assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
+        else:
+            assert abs(expected_result - actual_result) <= TOLERANCE
 
 if __name__ == '__main__':
     nose.main()
