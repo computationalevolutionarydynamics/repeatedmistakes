@@ -6,7 +6,7 @@ from hypothesis import given, assume
 from hypothesis.strategies import tuples, floats
 import nose
 
-from math import isnan, isfinite
+from math import isnan, isfinite, isinf
 
 """
 In order to test that our normalised payoff function is calculating the correct values, we will attempt to replicate
@@ -26,9 +26,9 @@ continuation probabilities for each of these 36 combinations of strategies, and 
 for each combination (within some level of tolerance because we must truncate the series at some point).
 """
 # The global epsilon used to truncate small terms in the sum
-EPSILON = 1e-4
+EPSILON = 0.01
 # The global tolerance between expected and actual values
-TOLERANCE = 1e-2
+TOLERANCE = 0.01
 
 # First, let's define some of the functions that will give the exact values of the combinations in particular
 # scenarios
@@ -93,7 +93,7 @@ single_result_values = [lambda x: x.R,
                         ]
 
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
-@given(payoff_values=tuples(floats(), floats(), floats(), floats()), delta=floats(min_value=0, max_value=0.9999))
+@given(payoff_values=tuples(floats(), floats(), floats(), floats()), delta=floats(min_value=0.01, max_value=0.99))
 def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
     # We need to assume a few things, namely, that the floats are not infinities or nans
     for value in payoff_values:
@@ -111,8 +111,15 @@ def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_valu
         expected_result = single_result_values[index](payoff_matrix)
         # Compute the result (throw away the result for the other strategy)
         actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
-        # See if they match
-        assert abs(expected_result - actual_result) < TOLERANCE
+        # See if they match, within a percentage of tolerance. If the expected result is very small just use the
+        # difference itself
+        # Also, if the actual or expected results are infinite, just pass
+        if isinf(actual_result) or isinf(expected_result):
+            assert True
+        if abs(expected_result) > TOLERANCE:
+            assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
+        else:
+            assert abs(expected_result - actual_result) <= TOLERANCE
 
 if __name__ == '__main__':
     nose.main()
