@@ -118,5 +118,50 @@ def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_valu
         else:
             assert abs(expected_result - actual_result) <= TOLERANCE
 
+# Now we will move on to testing the combinations that produce different behaviour in the first round, and then
+# the same after that
+round_one_different_combos = [(AllC, InverseTitForTat),
+                              (AllC, NiceAllD),
+                              (AllC, SuspiciousAllC),
+                              (AllC, SuspiciousTitForTat),
+                              (InverseTitForTat, AllC),
+                              (NiceAllD, AllC),
+                              (NiceAllD, NiceAllD),
+                              (NiceAllD, SuspiciousAllC),
+                              (NiceAllD, AllD),
+                              (SuspiciousAllC, AllC),
+                              (SuspiciousAllC, NiceAllD),
+                              (SuspiciousAllC, SuspiciousAllC),
+                              (SuspiciousAllC, AllD),
+                              (SuspiciousTitForTat, AllC),
+                              (SuspiciousInverseTitForTat, AllD),
+                              (AllD, TitForTat),
+                              (AllD, NiceAllD),
+                              (AllD, SuspiciousAllC),
+                              (AllD, SuspiciousInverseTitForTat)
+                              ]
+
+round_one_different_values = [lambda matrix, delta: first_round_distinct(matrix.R, matrix.S, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.R, matrix.S, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.S, matrix.R, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.S, matrix.R, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.S, matrix.P, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.R, matrix.T, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.R, matrix.T, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.R, matrix.P, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.S, matrix.T, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.S, matrix.P, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.T, matrix.R, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.T, matrix.S, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.P, matrix.R, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.P, matrix.S, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.T, matrix.R, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.P, matrix.S, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.T, matrix.P, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.T, matrix.P, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.P, matrix.T, delta),
+                              lambda matrix, delta: first_round_distinct(matrix.P, matrix.T, delta),
+                              ]
+
 if __name__ == '__main__':
     nose.main()
