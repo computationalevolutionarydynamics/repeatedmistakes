@@ -26,7 +26,7 @@ continuation probabilities for each of these 36 combinations of strategies, and 
 for each combination (within some level of tolerance because we must truncate the series at some point).
 """
 # The global epsilon used to truncate small terms in the sum
-EPSILON = 0.01
+EPSILON = 0.0001
 # The global tolerance between expected and actual values
 TOLERANCE = 0.01
 
@@ -98,6 +98,7 @@ round_one_different_combos = [(AllC, InverseTitForTat),
                               (AllC, NiceAllD),
                               (AllC, SuspiciousAllC),
                               (AllC, SuspiciousTitForTat),
+                              (TitForTat, AllD),
                               (InverseTitForTat, AllC),
                               (NiceAllD, AllC),
                               (NiceAllD, NiceAllD),
@@ -140,7 +141,7 @@ round_one_different_values = [lambda matrix, delta: first_round_distinct(matrix.
 strategy_combinations = single_result_combos + round_one_different_combos
 results_list = single_result_values + round_one_different_values
 
-small_float = floats(min_value=-1e10, max_value=1e10)
+small_float = floats(min_value=0, max_value=1e4)
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
 @given(payoff_values=tuples(small_float, small_float, small_float, small_float), delta=floats(min_value=0.01, max_value=0.99))
 def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
@@ -161,6 +162,11 @@ def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_valu
         actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
         # See if they match, within a percentage of tolerance. If the expected result is very small just use the
         # difference itself
+        print(index)
+        print(strategy_combinations[index])
+        print(payoff_values)
+        print(expected_result)
+        print(actual_result)
         if abs(expected_result) > TOLERANCE:
             assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
         else:
