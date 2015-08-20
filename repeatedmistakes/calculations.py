@@ -2,6 +2,9 @@
 Contains functions that allow for the analysis of different strategies or combinations of strategies and for performing
 computations.
 """
+# This is the number of small terms (terms < epsilon) that are required in order to stop the series
+NUMBER_OF_SMALL_TERMS = 4
+
 def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, epsilon):
     """
     Calculate the normalised payoff for strategies in the iterated prisoner's dilemma
@@ -35,11 +38,11 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
     player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
 
-    player_one_term = float('inf')
-    player_two_term = float('inf')
+    terms_too_small = 0
+
     # Set the rounds coutner to -1 so that the first round will be round 0
     rounds = -1
-    while abs(player_one_term) > epsilon or abs(player_two_term) > epsilon:
+    while terms_too_small < NUMBER_OF_SMALL_TERMS:
         rounds += 1
         # Compute the moves that each strategy makes
         move_one = player_one.next_move(player_two.history)
@@ -54,6 +57,13 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
         player_two_term = (continuation_probability ** rounds) * player_two_payoff
         strategy_one_payoff += player_one_term
         strategy_two_payoff += player_two_term
+
+        # We need to figure out if the terms are too small
+        if abs(player_one_term) < epsilon and abs(player_two_term) < epsilon:
+            terms_too_small += 1
+        # Otherwise, reset it to zero
+        else:
+            terms_too_small = 0
 
     # Multiply by (1 - continuation_probability) to normalise the value
     strategy_one_payoff *= (1 - continuation_probability)
