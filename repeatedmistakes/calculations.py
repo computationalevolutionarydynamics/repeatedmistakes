@@ -21,7 +21,7 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
         epsilon (float): The minimum size of terms in the sum before the sum is truncated and the result is returned
 
     Returns:
-        normalised_payoff (dict): A dict where the keys are the strategies and the values are the normalised payoffs
+        strategy_one_payoff, strategy_two_payoff (float): The normalised payoffs
 
     Raises:
         ValueError: If the continuation probability is greater than or equal to 1, as this would mean that the sum
@@ -30,7 +30,8 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
     if continuation_probability >= 1:
         raise ValueError('Continuation probability must be less than 1 for the sum to converge')
 
-    normalised_payoff = {strategy_one: 0, strategy_two: 0}
+    strategy_one_payoff = 0
+    strategy_two_payoff = 0
 
     # Create the player objects using the characterset from the payoff matrix
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
@@ -53,11 +54,11 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
         # Compute the term from the sum
         player_one_term = (continuation_probability ** rounds) * player_one_payoff
         player_two_term = (continuation_probability ** rounds) * player_two_payoff
-        normalised_payoff[strategy_one] += player_one_term
-        normalised_payoff[strategy_two] += player_two_term
+        strategy_one_payoff += player_one_term
+        strategy_two_payoff += player_two_term
 
     # Multiply by (1 - continuation_probability) to normalise the value
-    normalised_payoff[strategy_one] *= (1 - continuation_probability)
-    normalised_payoff[strategy_two] *= (1 - continuation_probability)
+    strategy_one_payoff *= (1 - continuation_probability)
+    strategy_two_payoff *= (1 - continuation_probability)
 
-    return normalised_payoff
+    return strategy_one_payoff, strategy_two_payoff
