@@ -113,9 +113,9 @@ def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_valu
         actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
         # See if they match, within a percentage of tolerance. If the expected result is very small just use the
         # difference itself
-        # Also, if the actual or expected results are infinite, just pass
-        if isinf(actual_result) or isinf(expected_result):
-            assert True
+        # Assume that the actual or expected results aren't infinite
+        assume(isfinite(actual_result))
+        assume(isfinite(expected_result))
         if abs(expected_result) > TOLERANCE:
             assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
         else:
