@@ -38,7 +38,8 @@ def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, conti
 
     player_one_term = np.Infinity
     player_two_term = np.Infinity
-    rounds = 0
+    # Set the rounds coutner to -1 so that the first round will be round 0
+    rounds = -1
     while player_one_term > epsilon or player_two_term > epsilon:
         rounds += 1
         # Compute the moves that each strategy makes
