@@ -102,6 +102,14 @@ class PayoffMatrix:
         else:
             raise InvalidActionError("Moves not in the characterset of this payoff matrix were passed.")
 
+    def max(self):
+        """
+        Compute the maximum possible payoff for any player
+
+        This is used in calculations to truncate the series once the maximum possible term is too small.
+        """
+        return max(max(self.CC, self.DD, self.DC, self.CD))
+
 
 class PrisonersDilemmaPayoff(PayoffMatrix):
     """
