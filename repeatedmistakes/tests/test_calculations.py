@@ -141,7 +141,7 @@ round_one_different_values = [lambda matrix, delta: first_round_distinct(matrix.
 strategy_combinations = single_result_combos + round_one_different_combos
 results_list = single_result_values + round_one_different_values
 
-small_float = floats(min_value=0, max_value=1e4)
+small_float = floats(min_value=0, max_value=10)
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
 @given(payoff_values=tuples(small_float, small_float, small_float, small_float), delta=floats(min_value=0.01, max_value=0.99))
 def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
