@@ -146,9 +146,6 @@ small_float = floats(min_value=0, max_value=10)
 @given(payoff_values=tuples(small_float, small_float, small_float, small_float), delta=floats(min_value=0.01, max_value=0.99))
 def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
     """Test that single result combinations produce the correct expected values"""
-    # We need to assume a few things, namely, that the floats are not infinities or nans
-    for value in payoff_values:
-        assume(not isnan(value))
     # Finally, the test. We need to iterate over each of the result combos
     for index, combo in enumerate(strategy_combinations):
         # Construct the payoff matrix
