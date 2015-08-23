@@ -176,9 +176,22 @@ two_rounds_different_values = [lambda matrix, delta: first_two_rounds_distinct(m
                                lambda matrix, delta: first_two_rounds_distinct(matrix.P, matrix.R, matrix.T, delta),
                                ]
 
+# This is all of the combinations of strategies that cycle with period two
+two_round_cycle_combos = [(TitForTat, SuspiciousTitForTat),
+                          (InverseTitForTat, InverseTitForTat),
+                          (SuspiciousTitForTat, TitForTat)
+                          ]
 
-strategy_combinations = single_result_combos + round_one_different_combos + two_rounds_different_combos
-results_list = single_result_values + round_one_different_values + two_rounds_different_values
+two_round_cycle_values = [lambda matrix, delta: two_action_cycle(matrix.S, matrix.T, delta),
+                          lambda matrix, delta: two_action_cycle(matrix.R, matrix.P, delta),
+                          lambda matrix, delta: two_action_cycle(matrix.P, matrix.R, delta)
+                          ]
+
+
+strategy_combinations = single_result_combos + round_one_different_combos + two_rounds_different_combos + \
+                            two_round_cycle_combos
+results_list = single_result_values + round_one_different_values + two_rounds_different_values + \
+                        two_round_cycle_values
 
 small_float = floats(min_value=0, max_value=10)
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
