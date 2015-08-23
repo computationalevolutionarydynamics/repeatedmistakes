@@ -138,8 +138,47 @@ round_one_different_values = [lambda matrix, delta: first_round_distinct(matrix.
                               lambda matrix, delta: first_round_distinct(matrix.P, matrix.T, delta),
                               ]
 
-strategy_combinations = single_result_combos + round_one_different_combos
-results_list = single_result_values + round_one_different_values
+# These are the combinations the give different behaviour in the first two rounds, and then give the same behaviour
+# for all subsequent rounds
+two_rounds_different_combos = [(TitForTat, NiceAllD),
+                              (TitForTat, SuspiciousAllC),
+                              (InverseTitForTat, NiceAllD),
+                              (InverseTitForTat, SuspiciousAllC),
+                              (NiceAllD, TitForTat),
+                              (NiceAllD, InverseTitForTat),
+                              (NiceAllD, SuspiciousTitForTat),
+                              (NiceAllD, SuspiciousInverseTitForTat),
+                              (SuspiciousAllC, TitForTat),
+                              (SuspiciousAllC, InverseTitForTat),
+                              (SuspiciousAllC, SuspiciousTitForTat),
+                              (SuspiciousAllC, SuspiciousInverseTitForTat),
+                              (SuspiciousTitForTat, NiceAllD),
+                              (SuspiciousTitForTat, SuspiciousAllC),
+                              (SuspiciousInverseTitForTat, NiceAllD),
+                              (SuspiciousInverseTitForTat, SuspiciousAllC)
+                              ]
+
+two_rounds_different_values = [lambda matrix, delta: first_two_rounds_distinct(matrix.R, matrix.S, matrix.P, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.S, matrix.T, matrix.R, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.R, matrix.P, matrix.S, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.S, matrix.R, matrix.T, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.R, matrix.T, matrix.P, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.R, matrix.P, matrix.T, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.S, matrix.T, matrix.P, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.S, matrix.P, matrix.T, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.T, matrix.S, matrix.R, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.T, matrix.R, matrix.S, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.P, matrix.S, matrix.R, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.P, matrix.R, matrix.S, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.T, matrix.S, matrix.P, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.P, matrix.T, matrix.R, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.T, matrix.P, matrix.S, delta),
+                               lambda matrix, delta: first_two_rounds_distinct(matrix.P, matrix.R, matrix.T, delta),
+                               ]
+
+
+strategy_combinations = single_result_combos + round_one_different_combos + two_rounds_different_combos
+results_list = single_result_values + round_one_different_values + two_rounds_different_values
 
 small_float = floats(min_value=0, max_value=10)
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
