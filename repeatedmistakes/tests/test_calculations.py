@@ -187,11 +187,31 @@ two_round_cycle_values = [lambda matrix, delta: two_action_cycle(matrix.S, matri
                           lambda matrix, delta: two_action_cycle(matrix.P, matrix.R, delta)
                           ]
 
+# This is all of the combinations of strategies that cycle with period four
+four_round_cycle_combos = [(TitForTat, InverseTitForTat),
+                           (TitForTat, SuspiciousInverseTitForTat),
+                           (InverseTitForTat, TitForTat),
+                           (InverseTitForTat, SuspiciousTitForTat),
+                           (SuspiciousTitForTat, InverseTitForTat),
+                           (SuspiciousTitForTat, SuspiciousInverseTitForTat),
+                           (SuspiciousInverseTitForTat, TitForTat),
+                           (SuspiciousInverseTitForTat, SuspiciousTitForTat)
+                           ]
+
+four_round_cycle_values = [lambda matrix, delta: four_action_cycle(matrix.R, matrix.S, matrix.P, matrix.T, delta),
+                           lambda matrix, delta: four_action_cycle(matrix.S, matrix.P, matrix.T, matrix.R, delta),
+                           lambda matrix, delta: four_action_cycle(matrix.R, matrix.T, matrix.P, matrix.S, delta),
+                           lambda matrix, delta: four_action_cycle(matrix.S, matrix.R, matrix.T, matrix.P, delta),
+                           lambda matrix, delta: four_action_cycle(matrix.T, matrix.R, matrix.S, matrix.P, delta),
+                           lambda matrix, delta: four_action_cycle(matrix.P, matrix.T, matrix.R, matrix.S, delta),
+                           lambda matrix, delta: four_action_cycle(matrix.T, matrix.P, matrix.S, matrix.R, delta),
+                           lambda matrix, delta: four_action_cycle(matrix.P, matrix.S, matrix.R, matrix.T, delta),
+                           ]
 
 strategy_combinations = single_result_combos + round_one_different_combos + two_rounds_different_combos + \
-                            two_round_cycle_combos
+                            two_round_cycle_combos + four_round_cycle_combos
 results_list = single_result_values + round_one_different_values + two_rounds_different_values + \
-                        two_round_cycle_values
+                        two_round_cycle_values + four_round_cycle_values
 
 small_float = floats(min_value=0, max_value=10)
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
