@@ -179,11 +179,13 @@ two_rounds_different_values = [lambda matrix, delta: first_two_rounds_distinct(m
 # This is all of the combinations of strategies that cycle with period two
 two_round_cycle_combos = [(TitForTat, SuspiciousTitForTat),
                           (InverseTitForTat, InverseTitForTat),
-                          (SuspiciousTitForTat, TitForTat)
+                          (SuspiciousTitForTat, TitForTat),
+                          (SuspiciousInverseTitForTat, SuspiciousInverseTitForTat)
                           ]
 
 two_round_cycle_values = [lambda matrix, delta: two_action_cycle(matrix.S, matrix.T, delta),
                           lambda matrix, delta: two_action_cycle(matrix.R, matrix.P, delta),
+                          lambda matrix, delta: two_action_cycle(matrix.T, matrix.S, delta),
                           lambda matrix, delta: two_action_cycle(matrix.P, matrix.R, delta)
                           ]
 
