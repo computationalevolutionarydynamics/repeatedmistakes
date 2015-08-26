@@ -1,6 +1,6 @@
-from repeatedmistakes.calculations import calculate_normalised_payoff
-from repeatedmistakes.strategies import *
-from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
+from ..calculations import calculate_normalised_payoff
+from ..strategies import *
+from ..repeatedgame import PrisonersDilemmaPayoff
 
 from hypothesis import given, assume
 from hypothesis.strategies import tuples, floats
