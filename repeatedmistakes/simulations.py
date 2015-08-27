@@ -27,11 +27,13 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
     # Create an PRNG instance and seed it
     random_instance = RandomState(seed)
 
-    normalised_payoff = {strategy_one: 0, strategy_two: 0}
-
     # Create the strategy objects, taking the characterset from the payoff_matrix
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
     player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
+
+    # Create variables to store the final_payoff
+    player_one_final_payoff = 0.
+    player_two_final_payoff = 0.
 
     # We want trials number of games
     for _ in range(trials):
@@ -59,12 +61,12 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
             # stops
             continue_game = random_instance.random_sample()
 
-        # Multiply each payoff by (1-continuation_probability) to normalise it, then add it to the dict value
-        normalised_payoff[player_one] += (1 - continuation_probability) * player_one_total_payoff
-        normalised_payoff[player_two] += (1 - continuation_probability) * player_two_total_payoff
+        # Multiply each payoff by (1-continuation_probability) to normalise it, then add it to final payoff value
+        player_one_final_payoff += (1 - continuation_probability) * player_one_total_payoff
+        player_two_final_payoff += (1 - continuation_probability) * player_two_total_payoff
 
     # Divide the payoffs by the total number of trials and return the final answer
-    normalised_payoff[player_one] /= trials
-    normalised_payoff[player_two] /= trials
+    player_one_final_payoff /= trials
+    player_two_final_payoff /= trials
 
-    return normalised_payoff
+    return player_one_final_payoff, player_two_final_payoff
