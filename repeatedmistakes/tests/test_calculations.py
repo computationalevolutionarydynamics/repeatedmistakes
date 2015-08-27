@@ -2,12 +2,9 @@ from repeatedmistakes.calculations import calculate_normalised_payoff
 from repeatedmistakes.strategies import *
 from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 
-from hypothesis import given, assume
+from hypothesis import given
 from hypothesis.strategies import tuples, floats
 import nose
-
-from math import isnan, isfinite, isinf
-
 """
 In order to test that our normalised payoff function is calculating the correct values, we will attempt to replicate
 the results found in Garcia and Traulsen, "The Structure of Mutations and the Evolution of Cooperation", PLoS ONE 10(10)
