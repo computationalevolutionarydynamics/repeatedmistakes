@@ -3,7 +3,7 @@ from repeatedmistakes.strategies import *
 from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 
 from hypothesis import given
-from hypothesis.strategies import tuples, floats
+from hypothesis.strategies import tuples, floats, sampled_from
 import nose
 """
 In order to test that our normalised payoff function is calculating the correct values, we will attempt to replicate
@@ -214,26 +214,27 @@ results_list = single_result_values + round_one_different_values + two_rounds_di
 
 small_float = floats(min_value=0, max_value=10)
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
-@given(payoff_values=tuples(small_float, small_float, small_float, small_float), delta=floats(min_value=0.01, max_value=0.99))
-def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
+@given(payoff_values=tuples(small_float, small_float, small_float, small_float),
+       delta=floats(min_value=0.01, max_value=0.99),
+       combo=sampled_from(zip(strategy_combinations, results_list)))
+def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta, combo):
     """Test that the normalised payoff for combinations of strategies with memory <= 1 matches the expected result."""
     # Construct the payoff matrix
     payoff_matrix = PrisonersDilemmaPayoff(P=payoff_values[0], R=payoff_values[1],
                                            S=payoff_values[2], T=payoff_values[3])
-    # Finally, the test. We need to iterate over each of the result combos
-    for index, combo in enumerate(strategy_combinations):
-        first_strategy = combo[0]
-        second_strategy = combo[1]
-        # Get the expected result
-        expected_result = results_list[index](payoff_matrix, delta)
-        # Compute the result (throw away the result for the other strategy)
-        actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
-        # See if they match, within a percentage of tolerance. If the expected result is very small just use the
-        # difference itself
-        if abs(expected_result) > TOLERANCE:
-            assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
-        else:
-            assert abs(expected_result - actual_result) <= TOLERANCE
+    strategy_combo = combo[0]
+    first_strategy = strategy_combo[0]
+    second_strategy = strategy_combo[1]
+    # Get the expected result
+    expected_result = combo[1](payoff_matrix, delta)
+    # Compute the result (throw away the result for the other strategy)
+    actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
+    # See if they match, within a percentage of tolerance. If the expected result is very small just use the
+    # difference itself
+    if abs(expected_result) > TOLERANCE:
+        assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
+    else:
+        assert abs(expected_result - actual_result) <= TOLERANCE
 
 if __name__ == '__main__':
     nose.main()
