@@ -216,7 +216,7 @@ small_float = floats(min_value=0, max_value=10)
 # We need to provide each one with four random values for the payoff matrix and a continuation probability
 @given(payoff_values=tuples(small_float, small_float, small_float, small_float), delta=floats(min_value=0.01, max_value=0.99))
 def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_values, delta):
-    """Test that single result combinations produce the correct expected values"""
+    """Test that the normalised payoff for combinations of strategies with memory <= 1 matches the expected result."""
     # Construct the payoff matrix
     payoff_matrix = PrisonersDilemmaPayoff(P=payoff_values[0], R=payoff_values[1],
                                            S=payoff_values[2], T=payoff_values[3])
