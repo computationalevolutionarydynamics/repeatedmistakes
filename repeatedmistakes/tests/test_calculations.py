@@ -233,11 +233,6 @@ def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_valu
         actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
         # See if they match, within a percentage of tolerance. If the expected result is very small just use the
         # difference itself
-        print(index)
-        print(strategy_combinations[index])
-        print(payoff_values)
-        print(expected_result)
-        print(actual_result)
         if abs(expected_result) > TOLERANCE:
             assert abs(expected_result - actual_result) / abs(expected_result) <= TOLERANCE
         else:
