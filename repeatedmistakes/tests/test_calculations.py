@@ -23,9 +23,9 @@ continuation probabilities for each of these 36 combinations of strategies, and 
 for each combination (within some level of tolerance because we must truncate the series at some point).
 """
 # The global epsilon used to truncate small terms in the sum
-EPSILON = 0.0001
+EPSILON = 0.001
 # The global tolerance between expected and actual values
-TOLERANCE = 0.01
+TOLERANCE = 0.1
 
 # First, let's define some of the functions that will give the exact values of the combinations in particular
 # scenarios
