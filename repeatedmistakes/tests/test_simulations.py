@@ -14,9 +14,9 @@ the tests for the calculations
 # The global epsilon for trunacting the calculation sum
 EPSILON = 0.0001
 # The tolerance allowed between the simulations and the calculations
-TOLERANCE = 0.2
+TOLERANCE = 0.3
 # The number of trials of the simulations to run
-TRIALS = 5000
+TRIALS = 1000
 
 small_float = floats(min_value=0, max_value=10)
 delta = floats(min_value=0.01, max_value = 0.99)
