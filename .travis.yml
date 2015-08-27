@@ -6,6 +6,6 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - nosetests --with-xcoverage --cover-package=repeatedmistakes --cover-tests
+  - travis_wait nosetests --with-xcoverage --cover-package=repeatedmistakes --cover-tests
 after_success:
   - coveralls
