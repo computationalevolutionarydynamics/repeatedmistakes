@@ -16,7 +16,7 @@ EPSILON = 0.0001
 # The tolerance allowed between the simulations and the calculations
 TOLERANCE = 0.1
 # The number of trials of the simulations to run
-TRIALS = 10000
+TRIALS = 2000
 
 small_float = floats(min_value=0, max_value=10)
 delta = floats(min_value=0.01, max_value = 0.99)
