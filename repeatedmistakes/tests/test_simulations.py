@@ -14,7 +14,7 @@ the tests for the calculations
 # The global epsilon for trunacting the calculation sum
 EPSILON = 0.0001
 # The tolerance allowed between the simulations and the calculations
-TOLERANCE = 0.1
+TOLERANCE = 0.2
 # The number of trials of the simulations to run
 TRIALS = 2000
 
