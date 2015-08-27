@@ -26,12 +26,12 @@ valid_history_strategy = two_characters.flatmap(
 def test_strategy_passedCharactersetAndHistories_returnsCharacterInCharacterset(history, strategy):
     """Test that if we pass a characterset and histories to a strategy, it only returns actions in that characterset"""
     characterset = history[0]
-    history = history[1]
+    strat_history = history[1]
     opponent_history = history[2]
     # Create an object with the correct characterset
     test_object = strategy(C=characterset[0], D=characterset[1])
     # Set up the object's history
-    test_object.history = history
+    test_object.history = strat_history
     # Assert that the returned action is still in the characterset
     assert test_object.next_move(opponent_history) in characterset
 
@@ -46,14 +46,14 @@ length_mistmatch_strategy = two_characters.flatmap(
 def test_strategy_historyLengthMismatch_raisesHistoryLengthMistmatchException(history, strategy):
     """Test that if the history length doesn't match the opponent history length, an exception is raised"""
     characterset = history[0]
-    history = history[1]
+    strat_history = history[1]
     opponent_history = history[2]
     # Assume that the lengths of the histories are not the same
     assume(not len(history) == len(opponent_history))
     # Create an object with the correct characterset
     test_object = strategy(C=characterset[0], D=characterset[1])
     # Set up the object's history
-    test_object.history = history
+    test_object.history = strat_history
     # Try and get the next move which should raise an error
     test_object.next_move(opponent_history)
 
@@ -71,14 +71,14 @@ different_characterset_strategy = two_characters.flatmap(
 def test_strategy_invalidCharactersPassed_raisesInvalidActionError(history, strategy):
     """Test that if the opponent's history doesn't match the characterset, an InvalidActionError is thrown."""
     characterset = history[0]
-    history = history[1]
+    strat_history = history[1]
     opponent_history = history[2]
     # Assume that the charactersets are not the same between the history and the opponent history
     assume(set(characterset) != set(opponent_history))
     # Create an object with the correct characterset
     test_object = strategy(C=characterset[0], D=characterset[1])
     # Set up the object's history
-    test_object.history = history
+    test_object.history = strat_history
     # Try and get the next move which should raise an error
     test_object.next_move(opponent_history)
 
@@ -92,13 +92,13 @@ different_history_characterset_strategy = tuples(two_characters, two_characters)
 def test_strategy_historyWithWrongCharacterset_raisesInvalidActionError(history, strategy):
     """Test that if you pass a history with the wrong characterset, an InvalidActionError is thrown."""
     characterset = history[0]
-    history = history[1]
+    strat_history = history[1]
     # Assume that the history characterset isn't a subset of the characterset
-    assume(not set(history) <= set(characterset))
+    assume(not set(strat_history) <= set(characterset))
     # Set up the object
     test_object = strategy(C=characterset[0], D=characterset[1])
     # Try and pass a history which should raise an error
-    test_object.history = history
+    test_object.history = strat_history
 
 # We want to test that given any history, the reset method will return the strategy's history to empty
 @given(history = two_characters.flatmap(lambda chars: tuples(just(chars), text(alphabet=chars))),
@@ -106,9 +106,9 @@ def test_strategy_historyWithWrongCharacterset_raisesInvalidActionError(history,
 def test_strategy_passHistoryThenReset_historyIsEmpty(history, strategy):
     """Test that regardless of characterset or history, reset clears the history"""
     characterset = history[0]
-    history = history[1]
+    strat_history = history[1]
     test_object = strategy(C=characterset[0], D=characterset[1])
-    test_object.history = history
+    test_object.history = strat_history
     test_object.reset()
     assert test_object.history == []
 """
