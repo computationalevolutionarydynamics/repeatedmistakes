@@ -1,8 +1,8 @@
 """
 Tests for the repeated game class
 """
-from .. import strategies
-from ..repeatedgame import RepeatedGame
+from repeatedmistakes import strategies
+from repeatedmistakes.repeatedgame import RepeatedGame
 
 from hypothesis import given
 from hypothesis.strategies import sampled_from, integers
