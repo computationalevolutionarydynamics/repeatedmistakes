@@ -13,7 +13,7 @@ the tests for the calculations
 # The global epsilon for trunacting the calculation sum
 EPSILON = 0.0001
 # The tolerance allowed between the simulations and the calculations
-TOLERANCE = 0.3
+TOLERANCE = 0.1
 # The number of trials of the simulations to run
 TRIALS = 1000
 
@@ -36,7 +36,15 @@ def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculati
     simulation_result, _ = simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, delta, TRIALS)
     # Compare them
     if abs(simulation_result) > TOLERANCE:
-        assert abs(simulation_result - calculation_result) / abs(calculation_result) <= TOLERANCE
+        diff = abs(simulation_result - calculation_result) / abs(calculation_result)
+        if diff <= TOLERANCE:
+            print(".")
+        else:
+            print("Failed")
+            print("Strategies: " + str(strategy_one) + " " + str(strategy_two))
+            print("Payoff matrix: " + str(payoff_matrix))
+            print("Delta: " + str(delta))
+            print("Difference was " + str(diff))
     else:
         assert abs(simulation_result - calculation_result) <= TOLERANCE
 
