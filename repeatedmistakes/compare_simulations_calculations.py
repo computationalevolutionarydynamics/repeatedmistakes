@@ -39,3 +39,6 @@ def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculati
         assert abs(simulation_result - calculation_result) / abs(calculation_result) <= TOLERANCE
     else:
         assert abs(simulation_result - calculation_result) <= TOLERANCE
+
+if __name__ == '__main__':
+    comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculations()
