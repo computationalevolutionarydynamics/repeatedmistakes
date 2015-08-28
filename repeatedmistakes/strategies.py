@@ -4,7 +4,7 @@ Contains classes that can be used to model strategies in the repeated prisoner's
 All strategies should inherit from the Strategy abstract base class to make use of common functions like validation
 of histories and possibly other functions down the track
 """
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 class InvalidActionError(BaseException):
     pass
@@ -14,7 +14,7 @@ class HistoryLengthMismatch(BaseException):
     pass
 
 
-class Strategy(ABC):
+class Strategy():
     def __init__(self, C='C', D='D'):
         """
         Initialise the strategy's history to empty and define the symbols used to represent cooperation and defection
