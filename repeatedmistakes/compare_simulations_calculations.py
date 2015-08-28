@@ -38,15 +38,27 @@ def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculati
     if abs(simulation_result) > TOLERANCE:
         diff = abs(simulation_result - calculation_result) / abs(calculation_result)
         if diff <= TOLERANCE:
-            print(".")
+            report_success()
         else:
-            print("Failed")
-            print("Strategies: " + str(strategy_one) + " " + str(strategy_two))
-            print("Payoff matrix: " + str(payoff_matrix))
-            print("Delta: " + str(delta))
-            print("Difference was " + str(diff))
+            report_failure(combo, payoff_values, delta, diff)
     else:
-        assert abs(simulation_result - calculation_result) <= TOLERANCE
+        diff = abs(simulation_result - calculation_result)
+        if diff <= TOLERANCE:
+            report_success()
+        else:
+            report_failure(combo, payoff_values, delta, diff)
+
+def report_success():
+    """Report a successful test"""
+    print(".")
+
+def report_failure(combo, payoff_matrix, delta, diff):
+    """Report when the difference between simulation is outside tolerance"""
+    print("Failed")
+    print("Strategies: " + str(combo[0]) + " " + str(combo[1]))
+    print("Payoff matrix: " + str(payoff_matrix))
+    print("Delta: " + str(delta))
+    print("Difference was " + str(diff))
 
 if __name__ == '__main__':
     comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculations()
