@@ -5,7 +5,6 @@ from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 
 from hypothesis import given
 from hypothesis.strategies import floats, tuples, sampled_from
-import nose
 
 """
 Here we want to test the simulations against the numerical calculations. We will reuse the sets of strategy pairs from
@@ -23,7 +22,7 @@ delta = floats(min_value=0.01, max_value = 0.99)
 @given(payoff_values=tuples(small_float, small_float, small_float, small_float),
        delta=delta,
        combo = sampled_from(strategy_combinations))
-def test_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculations(payoff_values, delta, combo):
+def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculations(payoff_values, delta, combo):
     """This tests that the results returned by the simulations match the results of the calculations."""
     # Construct the payoff matrix
     payoff_matrix = PrisonersDilemmaPayoff(P = payoff_values[0], R = payoff_values[1],
@@ -35,15 +34,8 @@ def test_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculations(pa
     calculation_result, _ = calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, delta, EPSILON)
     # Get the result from the sims
     simulation_result, _ = simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, delta, TRIALS)
-    # Debug code
-    print(combo)
-    print(calculation_result)
-    print(simulation_result)
     # Compare them
     if abs(simulation_result) > TOLERANCE:
         assert abs(simulation_result - calculation_result) / abs(calculation_result) <= TOLERANCE
     else:
         assert abs(simulation_result - calculation_result) <= TOLERANCE
-
-if __name__ == '__main__':
-    nose.main()
