@@ -41,11 +41,15 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
     # Set up the continuation variable
     cont = True
 
+    # Create the players with the movesets from the payoff matrix
+    player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
+    player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
+
     while cont:
         number_of_trials += 1
 
         # Perform the trials and add them to the dataframe
-        trial = perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probability, random_instance)
+        trial = perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance)
         strategy_one_payoffs.append(trial[0])
         strategy_two_payoffs.append(trial[1])
 
@@ -68,7 +72,7 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
     strategy_two_normalised_payoff = statistics.mean(strategy_two_payoffs) * (1 - continuation_probability)
     return strategy_one_normalised_payoff, strategy_two_normalised_payoff
 
-def perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probability, random_instance):
+def perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance):
     """
     Perform one game of the iterated prisoners dilemma and return the payoff for each player
 
@@ -76,8 +80,8 @@ def perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probab
     random value we pick is above the continuation probability.
 
     Args:
-        strategy_one (Strategy): The first strategy
-        strategy_two (Strategy): The second strategy
+        player_one (Strategy): The first player
+        player_two (Strategy): The second player
         payoff_matrix (PayoffMatrix): The payoff matrix representing the reward for each action
         continuation_probability (float): The probability of continuing each game
         random_instance (RandomState): A random state instance with which to generate random numbers
@@ -85,16 +89,16 @@ def perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probab
     Returns:
         player_one_payoff, player_two_payoff: The payoffs of each player
     """
-    # Create the players with the movesets from the payoff matrix
-    player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
-    player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
-
     # Set up the total payoffs
     player_one_payoff = 0.
     player_two_payoff = 0.
 
     # Set up the continuation variable
     cont = True
+
+    # Reset the strategy objects
+    player_one.reset()
+    player_two.reset()
 
     while cont:
         player_one_move = player_one.next_move(player_two.history)
