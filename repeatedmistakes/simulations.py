@@ -4,8 +4,6 @@ Contains functions used to simulate different scenarios involving the iterated p
 from numpy.random import RandomState
 import statistics
 from math import sqrt
-from multiprocessing import Pool, Queue
-from queue import Empty
 
 
 def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
@@ -27,7 +25,6 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
         trials (int): The number of games to simulate in order to calculate the normalised payoff
         seed (int): The seed for the PRNG
         estimator_stdev (float): The allowable deviation of our estimator.
-        processes (int): The number of processes to use. Default is 4
 
     Returns:
         strategy_one_normalised_payoff, strategy_two_normalised_payoff: the normalised payoffs
@@ -44,32 +41,20 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
     # Set up the continuation variable
     cont = True
 
-    # Set up a worker pool
-    p = Pool()
-
-    # Set up a queue for the results
-    q = Queue()
+    # Create the players with the movesets from the payoff matrix
+    player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
+    player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
 
     while cont:
-        # Submit a trial to the worker pool asynchronously
-        # The result should be placed into the queue
-        p.apply_async(perform_trial,
-                      args=(strategy_one, strategy_two, payoff_matrix, continuation_probability, random_instance),
-                      callback=q.put)
+        number_of_trials += 1
 
-        # Try and get a result from the queue
-        try:
-            trial = q.get_nowait()
-            number_of_trials += 1
-            strategy_one_payoffs.append(trial[0])
-            strategy_two_payoffs.append(trial[1])
-        except Empty:
-            pass
+        # Perform the trials and add them to the dataframe
+        trial = perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance)
+        strategy_one_payoffs.append(trial[0])
+        strategy_two_payoffs.append(trial[1])
 
         if estimator_stdev is None:
             if number_of_trials >= trials:
-                # Close the queue
-                p.close()
                 break
         else:
             if number_of_trials > 100:
@@ -81,15 +66,13 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
                 strategy_two_stdev /= sqrt(number_of_trials)
                 # If both are below threshold, break
                 if strategy_one_stdev < estimator_stdev and strategy_two_stdev < estimator_stdev:
-                    # Close the queue
-                    p.close()
                     break
 
     strategy_one_normalised_payoff = statistics.mean(strategy_one_payoffs) * (1 - continuation_probability)
     strategy_two_normalised_payoff = statistics.mean(strategy_two_payoffs) * (1 - continuation_probability)
     return strategy_one_normalised_payoff, strategy_two_normalised_payoff
 
-def perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probability, random_instance):
+def perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance):
     """
     Perform one game of the iterated prisoners dilemma and return the payoff for each player
 
@@ -97,8 +80,8 @@ def perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probab
     random value we pick is above the continuation probability.
 
     Args:
-        strategy_one (Strategy): The first strategy
-        strategy_two (Strategy): The second strategy
+        player_one (Strategy): The first player
+        player_two (Strategy): The second player
         payoff_matrix (PayoffMatrix): The payoff matrix representing the reward for each action
         continuation_probability (float): The probability of continuing each game
         random_instance (RandomState): A random state instance with which to generate random numbers
@@ -113,9 +96,9 @@ def perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probab
     # Set up the continuation variable
     cont = True
 
-    # Create the players with the movesets from the payoff matrix
-    player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
-    player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
+    # Reset the strategy objects
+    player_one.reset()
+    player_two.reset()
 
     while cont:
         player_one_move = player_one.next_move(player_two.history)
