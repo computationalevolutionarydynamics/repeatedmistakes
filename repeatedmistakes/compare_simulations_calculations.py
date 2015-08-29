@@ -50,11 +50,11 @@ def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculati
 
 def report_success():
     """Report a successful test"""
-    print(".")
+    print(".", end="")
 
 def report_failure(combo, payoff_matrix, delta, diff):
     """Report when the difference between simulation is outside tolerance"""
-    print("Failed")
+    print("\nFailed")
     print("Strategies: " + str(combo[0]) + " " + str(combo[1]))
     print("Payoff matrix: " + str(payoff_matrix))
     print("Delta: " + str(delta))
