@@ -2,15 +2,19 @@
 Contains functions used to simulate different scenarios involving the iterated prisoner's dilemma
 """
 from numpy.random import RandomState
+import statistics
 
 
-def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, trials=1000, seed=1234):
+def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
+                               trials=1000, seed=1234, estimator_stdev=None):
     """
     Calculate the normalised payoff for each strategy in the iterated prisoner's dilemma
 
     This method calculates the normalised payoff for two strategies in the iterated prisoner's dilemma using a monte
     carlo method. The prisoner's dilemma is played for a random number of rounds (as determined by the continuation
-    probability) for some given number of trials, and the normalised payoff of each strategy is then computed.
+    probability). The number of trials performed is either passed as a parameter or alternatively we generate enough
+    trials so that we can guarantee that the standard deviation of the normalised payoff is within the passed bound.
+    We then calculate the mean of these trials to get our simulated normalised payoff
 
     Args:
         strategy_one (Strategy): The strategy to be tested
@@ -19,54 +23,91 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
         continuation_probability (float): The probability of continuing the game
         trials (int): The number of games to simulate in order to calculate the normalised payoff
         seed (int): The seed for the PRNG
+        estimator_stdev (float): The allowable deviation of our estimator.
 
     Returns:
-        normalised_payoff (dict): A dictionary where the keys are the strategies and the values are the normalised
-            payoff.
+        strategy_one_normalised_payoff, strategy_two_normalised_payoff: the normalised payoffs
     """
     # Create an PRNG instance and seed it
     random_instance = RandomState(seed)
 
-    # Create the strategy objects, taking the characterset from the payoff_matrix
+    strategy_one_payoffs = []
+    strategy_two_payoffs = []
+
+    # Count the number of trials
+    number_of_trials = 0
+
+    # Set up the continuation variable
+    cont = True
+
+    while cont:
+        number_of_trials += 1
+
+        # Perform the trials and add them to the dataframe
+        trial = perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probability, random_instance)
+        strategy_one_payoffs.append(trial[0])
+        strategy_two_payoffs.append(trial[1])
+
+        if estimator_stdev is None:
+            if number_of_trials >= trials:
+                break
+        else:
+            if number_of_trials > 100:
+                # Compute the sample standard deviation for both players
+                strategy_one_stdev = statistics.stdev(strategy_one_payoffs)
+                strategy_two_stdev = statistics.stdev(strategy_two_payoffs)
+                # If both are below threshold, break
+                if strategy_one_stdev < estimator_stdev and strategy_two_stdev < estimator_stdev:
+                    break
+
+    strategy_one_normalised_payoff = statistics.mean(strategy_one_payoffs) * (1 - continuation_probability)
+    strategy_two_normalised_payoff = statistics.mean(strategy_two_payoffs) * (1 - continuation_probability)
+    return strategy_one_normalised_payoff, strategy_two_normalised_payoff
+
+def perform_trial(strategy_one, strategy_two, payoff_matrix, continuation_probability, random_instance):
+    """
+    Perform one game of the iterated prisoners dilemma and return the payoff for each player
+
+    This simulates the game between two players, recording the total payoff. We keep simulating the game until the
+    random value we pick is above the continuation probability.
+
+    Args:
+        strategy_one (Strategy): The first strategy
+        strategy_two (Strategy): The second strategy
+        payoff_matrix (PayoffMatrix): The payoff matrix representing the reward for each action
+        continuation_probability (float): The probability of continuing each game
+        random_instance (RandomState): A random state instance with which to generate random numbers
+
+    Returns:
+        player_one_payoff, player_two_payoff: The payoffs of each player
+    """
+    # Create the players with the movesets from the payoff matrix
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
     player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
 
-    # Create variables to store the final_payoff
-    player_one_final_payoff = 0.
-    player_two_final_payoff = 0.
+    # Set up the total payoffs
+    player_one_payoff = 0.
+    player_two_payoff = 0.
 
-    # We want trials number of games
-    for _ in range(trials):
-        continue_game = 0.
-        player_one_total_payoff  = 0.
-        player_two_total_payoff  = 0.
+    # Set up the continuation variable
+    cont = True
 
-        # Reset each player
-        player_one.reset()
-        player_two.reset()
-        # We want to repeat until we pick a random number that's greater than the continuation probability
-        while continue_game < continuation_probability:
-            # Figure out what move each player plays
-            move_one = player_one.next_move(player_two.history)
-            move_two = player_two.next_move(player_one.history)
-            # Add these moves to each player's history
-            player_one.history += move_one
-            player_two.history += move_two
-            # Get the payoff for each player for this set of moves
-            player_one_payoff, player_two_payoff = payoff_matrix.payoff(player_one=move_one, player_two=move_two)
-            # Add this to the expected payoff
-            player_one_total_payoff += player_one_payoff
-            player_two_total_payoff += player_two_payoff
-            # Choose a random float between zero and one. If this is greater than the continuation probability, the game
-            # stops
-            continue_game = random_instance.random_sample()
+    while cont:
+        player_one_move = player_one.next_move(player_two.history)
+        player_two_move = player_two.next_move(player_one.history)
 
-        # Multiply each payoff by (1-continuation_probability) to normalise it, then add it to final payoff value
-        player_one_final_payoff += (1 - continuation_probability) * player_one_total_payoff
-        player_two_final_payoff += (1 - continuation_probability) * player_two_total_payoff
+        # Calculate payoffs and add them to the total
+        payoff_one, payoff_two = payoff_matrix.payoff(player_one=player_one_move, player_two=player_two_move)
+        player_one_payoff += payoff_one
+        player_two_payoff += payoff_two
 
-    # Divide the payoffs by the total number of trials and return the final answer
-    player_one_final_payoff /= trials
-    player_two_final_payoff /= trials
+        # Update the histories of the strategies
+        player_one.history += player_one_move
+        player_two.history += player_two_move
 
-    return player_one_final_payoff, player_two_final_payoff
+        # Figure out whether we should continue or not
+        if random_instance.random_sample() > continuation_probability:
+            cont = False
+
+    return player_one_payoff, player_two_payoff
+
