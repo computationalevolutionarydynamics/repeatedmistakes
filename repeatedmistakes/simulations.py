@@ -3,6 +3,7 @@ Contains functions used to simulate different scenarios involving the iterated p
 """
 from numpy.random import RandomState
 import statistics
+from math import sqrt
 
 
 def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
@@ -56,6 +57,9 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
                 # Compute the sample standard deviation for both players
                 strategy_one_stdev = statistics.stdev(strategy_one_payoffs)
                 strategy_two_stdev = statistics.stdev(strategy_two_payoffs)
+                # Divide these by the sqrt of the number of trials
+                strategy_one_stdev /= sqrt(number_of_trials)
+                strategy_two_stdev /= sqrt(number_of_trials)
                 # If both are below threshold, break
                 if strategy_one_stdev < estimator_stdev and strategy_two_stdev < estimator_stdev:
                     break
