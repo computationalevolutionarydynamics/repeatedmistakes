@@ -8,7 +8,7 @@ Here we want to test the simulations against the numerical calculations. We will
 the tests for the calculations
 """
 # The global epsilon for trunacting the calculation sum
-EPSILON = 0.0001
+EPSILON = 0.001
 # The tolerance allowed between the simulations and the calculations
 TOLERANCE = 0.1
 # The continuation probability
@@ -25,7 +25,7 @@ def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculati
         # Get the result from the calcs
         calculation_result, _ = calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, EPSILON)
         # Get the result from the sims
-        simulation_result, _ = simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, estimator_stdev=TOLERANCE/2)
+        simulation_result, _ = simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, estimator_stdev=TOLERANCE)
         # Compare them
         if abs(simulation_result) > TOLERANCE:
             diff = abs(simulation_result - calculation_result) / abs(calculation_result)
