@@ -3,6 +3,7 @@ from repeatedmistakes.calculations import calculate_normalised_payoff
 from repeatedmistakes.tests.test_calculations import strategy_combinations
 from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 
+import time
 """
 Here we want to test the simulations against the numerical calculations. We will reuse the sets of strategy pairs from
 the tests for the calculations
@@ -25,7 +26,7 @@ def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculati
         # Get the result from the calcs
         calculation_result, _ = calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, EPSILON)
         # Get the result from the sims
-        simulation_result, _ = simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, estimator_stdev=TOLERANCE)
+        simulation_result, _ = simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, trials = 1000)
         # Compare them
         if abs(simulation_result) > TOLERANCE:
             diff = abs(simulation_result - calculation_result) / abs(calculation_result)
@@ -53,4 +54,7 @@ def report_failure(combo, payoff_matrix, delta, diff):
     print("Difference was " + str(diff))
 
 if __name__ == '__main__':
+    t1 = time.time()
     comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculations()
+    t2 = time.time()
+    print("\nTime taken was " + str(t2-t1) + "s")
