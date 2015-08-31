@@ -76,6 +76,24 @@ class Strategy(ABC):
         This method should not peform any update of internal state or history
         """
 
+    def opposite(self, move):
+        """
+        Returns the opposite move to the one given, in the context of this strategy's characterset
+
+        Args:
+            move: The move to reverse
+
+        Returns:
+            opposite; The opposite move to the one passed
+        """
+        if move not in [self.C, self.D]:
+            raise InvalidActionError("Action must be either " + str(self.C) + " or " + str(self.D))
+        else:
+            if move == self.D:
+                return self.C
+            else:
+                return self.D
+
     def reset(self):
         """
         This method resets the state of the strategy to an empty history
