@@ -7,7 +7,7 @@ from math import sqrt
 
 
 def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
-                               trials=1000, seed=1234, estimator_stdev=None):
+                               mistake_probability=0., trials=1000, seed=1234, estimator_stdev=None):
     """
     Calculate the normalised payoff for each strategy in the iterated prisoner's dilemma
 
@@ -22,6 +22,7 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
         strategy_two (Strategy): The other strategy
         payoff_matrix (PayoffMatrix): A payoff matrix representing the rewards for each set of actions
         continuation_probability (float): The probability of continuing the game
+        mistake_probability (float): The probability of a single player making a single mistake in a single round
         trials (int): The number of games to simulate in order to calculate the normalised payoff
         seed (int): The seed for the PRNG
         estimator_stdev (float): The allowable deviation of our estimator.
@@ -72,7 +73,7 @@ def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, contin
     strategy_two_normalised_payoff = statistics.mean(strategy_two_payoffs) * (1 - continuation_probability)
     return strategy_one_normalised_payoff, strategy_two_normalised_payoff
 
-def perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance):
+def perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance, mistake_probability=0.):
     """
     Perform one game of the iterated prisoners dilemma and return the payoff for each player
 
@@ -85,6 +86,7 @@ def perform_trial(player_one, player_two, payoff_matrix, continuation_probabilit
         payoff_matrix (PayoffMatrix): The payoff matrix representing the reward for each action
         continuation_probability (float): The probability of continuing each game
         random_instance (RandomState): A random state instance with which to generate random numbers
+        mistake_probability (float): Probability of a single player making a single mistake in a round, default is 0
 
     Returns:
         player_one_payoff, player_two_payoff: The payoffs of each player
@@ -104,6 +106,14 @@ def perform_trial(player_one, player_two, payoff_matrix, continuation_probabilit
         player_one_move = player_one.next_move(player_two.history)
         player_two_move = player_two.next_move(player_one.history)
 
+        # Check for mistake in player one
+        if random_instance.random_sample() < mistake_probability:
+            player_one_move = player_one.opposite(player_one_move)
+
+        # Check for mistake in player two
+        if random_instance.random_sample() < mistake_probability:
+            player_two_move = player_two.opposite(player_two_move)
+
         # Calculate payoffs and add them to the total
         payoff_one, payoff_two = payoff_matrix.payoff(player_one=player_one_move, player_two=player_two_move)
         player_one_payoff += payoff_one
@@ -118,4 +128,3 @@ def perform_trial(player_one, player_two, payoff_matrix, continuation_probabilit
             cont = False
 
     return player_one_payoff, player_two_payoff
-
