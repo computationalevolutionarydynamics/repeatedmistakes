@@ -102,7 +102,7 @@ class Strategy(ABC):
         Any children of this class that use extra instance variables should override this method and reset instance
         variable as necessary
         """
-        self.history = []
+        self._history = []
 
 
 class AllC(Strategy):
