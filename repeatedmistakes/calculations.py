@@ -2,7 +2,7 @@
 Contains functions that allow for the analysis of different strategies or combinations of strategies and for performing
 computations.
 """
-def calculate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, epsilon):
+def calculate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, epsilon):
     """
     Calculate the normalised payoff for strategies in the iterated prisoner's dilemma
 

@@ -1,4 +1,4 @@
-from repeatedmistakes.calculations import calculate_normalised_payoff
+from repeatedmistakes.calculations import calculate_payoff
 from repeatedmistakes.strategies import *
 from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 
@@ -228,7 +228,7 @@ def test_calculations_singleResultCombosGiven_ExpectedResultReturned(payoff_valu
     # Get the expected result
     expected_result = combo[1](payoff_matrix, delta)
     # Compute the result (throw away the result for the other strategy)
-    actual_result, _ = calculate_normalised_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
+    actual_result, _ = calculate_payoff(first_strategy, second_strategy, payoff_matrix, delta, EPSILON)
     # See if they match, within a percentage of tolerance. If the expected result is very small just use the
     # difference itself
     if abs(expected_result) > TOLERANCE:
