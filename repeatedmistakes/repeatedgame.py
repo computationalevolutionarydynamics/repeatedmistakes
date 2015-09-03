@@ -1,4 +1,4 @@
-from repeatedmistakes.simulations import simulate_normalised_payoff
+from repeatedmistakes.simulations import simulate_payoff
 from repeatedmistakes.calculations import calculate_payoff
 from repeatedmistakes.strategies import InvalidActionError
 
@@ -51,7 +51,7 @@ class RepeatedGame:
         Returns:
             As per simulations.simulate_normalised_payoff
         """
-        return simulate_normalised_payoff(self.strategy_one, self.strategy_two, payoff_matrix,
+        return simulate_payoff(self.strategy_one, self.strategy_two, payoff_matrix,
                                           continuation_probability, trials, seed)
 
     def calculate_normalised_payoff(self, payoff_matrix, continuation_probability, epsilon):

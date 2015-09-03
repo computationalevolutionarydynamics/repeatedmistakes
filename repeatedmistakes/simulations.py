@@ -6,7 +6,7 @@ import statistics
 from math import sqrt
 
 
-def simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
+def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
                                mistake_probability=0., trials=1000, seed=1234, estimator_stdev=None):
     """
     Calculate the normalised payoff for each strategy in the iterated prisoner's dilemma

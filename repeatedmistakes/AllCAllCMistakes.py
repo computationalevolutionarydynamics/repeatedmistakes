@@ -5,13 +5,13 @@ against the value computed by simulations
 from repeatedmistakes.strategies import AllC
 from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 
-from repeatedmistakes.simulations import simulate_normalised_payoff
+from repeatedmistakes.simulations import simulate_payoff
 
 def compute_values():
     payoff_matrix = PrisonersDilemmaPayoff()
     delta = 0.9
     mu = 0.05
-    sim = simulate_normalised_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.2)
+    sim = simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.2)
     calc = [0., 0.]
     no_mistake = [0., 0.]
     one_mistake = [0., 0.]

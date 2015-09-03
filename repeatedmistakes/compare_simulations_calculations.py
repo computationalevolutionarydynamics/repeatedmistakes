@@ -1,4 +1,4 @@
-from repeatedmistakes.simulations import simulate_normalised_payoff
+from repeatedmistakes.simulations import simulate_payoff
 from repeatedmistakes.calculations import calculate_payoff
 from repeatedmistakes.tests.test_calculations import strategy_combinations
 from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
@@ -26,7 +26,7 @@ def comparison_simulations_passAnyDeltaAndPayoffMatrix_simulationsMatchCalculati
         # Get the result from the calcs
         calculation_result, _ = calculate_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, EPSILON)
         # Get the result from the sims
-        simulation_result, _ = simulate_normalised_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, trials = 1000)
+        simulation_result, _ = simulate_payoff(strategy_one, strategy_two, payoff_matrix, DELTA, trials = 1000)
         # Compare them
         if abs(simulation_result) > TOLERANCE:
             diff = abs(simulation_result - calculation_result) / abs(calculation_result)
