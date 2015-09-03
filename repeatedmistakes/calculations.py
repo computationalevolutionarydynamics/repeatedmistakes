@@ -141,7 +141,7 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
             # Figure out the case for one mistake
             # Compute the payoff
             # Make one mistake
-            player_one_move = strategy_one.opposite(player_one_move)
+            player_one_move = player_one.opposite(player_one_move)
             payoff = payoff_matrix.payoff(player_one_move, player_two_move)
             strategy_one_payoff += payoff[0] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
             strategy_two_payoff += payoff[1] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
@@ -154,9 +154,9 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
 
             # Now the other one mistake case
             # Reverse the mistake we just made
-            player_one_move = strategy_one.opposite(player_one_move)
+            player_one_move = player_one.opposite(player_one_move)
             # Make another mistake
-            player_two_move = strategy_two.opposite(player_two_move)
+            player_two_move = player_two.opposite(player_two_move)
             payoff = payoff_matrix.payoff(player_one_move, player_two_move)
             strategy_one_payoff += payoff[0] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
             strategy_two_payoff += payoff[1] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
@@ -169,7 +169,7 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
 
             # Lastly the two mistake case
             # Make another mistake for a total of two (the second player has already made a mistake)
-            player_one_move = strategy_one.opposite(player_one_move)
+            player_one_move = player_one.opposite(player_one_move)
             payoff = payoff_matrix.payoff(player_one_move, player_two_move)
             strategy_one_payoff += payoff[0] * (mistake_probability ** 2) * node.coefficient
             strategy_two_payoff += payoff[1] * (mistake_probability ** 2) * node.coefficient
