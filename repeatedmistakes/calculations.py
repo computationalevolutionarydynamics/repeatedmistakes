@@ -133,8 +133,8 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
             strategy_two_payoff += payoff[1] * ((1 - mistake_probability) ** 2) * node.coefficient
 
             # Add an item to the queue, if the max term size is large enough
-            coefficient = continuation_probability * ((1 - mistake_probability) ** 2) * node.coefficient * payoff_matrix.max()
-            if coefficient > epsilon:
+            coefficient = continuation_probability * ((1 - mistake_probability) ** 2) * node.coefficient
+            if coefficient * payoff_matrix.max() > epsilon:
                 q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
                                                              player_two.history + player_two_move]))
 
@@ -147,8 +147,8 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
             strategy_two_payoff += payoff[1] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
 
             # Add to the queue if max term size is large enough
-            coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient * payoff_matrix.max()
-            if coefficient > epsilon:
+            coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
+            if coefficient * payoff_matrix.max() > epsilon:
                 q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
                                                              player_two.history + player_two_move]))
 
@@ -162,8 +162,8 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
             strategy_two_payoff += payoff[1] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
 
             # Add to the queue if the max term size is large enough
-            coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient * payoff_matrix.max()
-            if coefficient > epsilon:
+            coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
+            if coefficient * payoff_matrix.max() > epsilon:
                 q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
                                                              player_two.history + player_two_move]))
 
@@ -175,8 +175,8 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
             strategy_two_payoff += payoff[1] * (mistake_probability ** 2) * node.coefficient
 
             # Add to the queue if the max term size is large enough
-            coefficient = continuation_probability * (mistake_probability ** 2) * node.coefficient * payoff_matrix.max()
-            if coefficient > epsilon:
+            coefficient = continuation_probability * (mistake_probability ** 2) * node.coefficient
+            if coefficient * payoff_matrix.max() > epsilon:
                 q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
                                                              player_two.history + player_two_move]))
 
