@@ -34,6 +34,7 @@ class Strategy(ABC):
     @history.setter
     def history(self, new_history):
         if set(new_history) <= {self.C, self.D}:
+            self.reset()
             self._history = new_history
         else:
             raise InvalidActionError("New history \n" + str(new_history) + "\n does not match the current " +
