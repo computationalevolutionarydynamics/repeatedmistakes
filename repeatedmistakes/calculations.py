@@ -23,9 +23,9 @@ def calculate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_pro
 
     Raises:
         ValueError: If the continuation probability is greater than or equal to 1, as this would mean that the sum
-            would not converge.
+            would not converge. We also need it to be >= 0 to be a valid probability.
     """
-    if continuation_probability >= 1:
+    if continuation_probability >= 1 or continuation_probability < 0:
         raise ValueError('Continuation probability must be less than 1 for the sum to converge')
 
     strategy_one_payoff = 0.
