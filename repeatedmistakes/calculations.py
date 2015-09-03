@@ -64,3 +64,40 @@ def calculate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_pro
     strategy_two_payoff *= (1 - continuation_probability)
 
     return strategy_one_payoff, strategy_two_payoff
+
+def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, continuation_probability,
+                                  mistake_probability, epsilon, calc_method='naive'):
+    """
+    Calculate the normalised payoff for strategies in the iterated prisoner's dilemma with mistakes
+
+    Args:
+        strategy_one (Strategy): The first strategy in the game
+        strategy_two (Strategy): The second strategy in the game
+        payoff_matrix (PayoffMatrix): An object that gives the payoff for each player given certain actions
+        continuation_probability (float): The probability that another game is played after each round
+        mistake_probability (float): The probability of a single strategy making a mistake in a single round
+        epsilon (float): The value at which we truncate the series. We truncate when the largest possible term is lower
+            than this value
+        calc_method (string): A calculation method. We may offer a few of these, and we may later split this function
+            up if there isn't enough in common between the calculation methods.
+
+    Returns:
+        strategy_one_payoff, strategy_two_payoff (float): The normalised payoff result
+
+    Raises:
+        ValueError: If the continuation probability is greater than or equal to 1 or less than zero
+        ValueError: If the mistake_probability is greater than or equal to 1 or less than zero
+    """
+    # Validate some input
+    if continuation_probability >= 1 or continuation_probability < 0:
+        raise ValueError('Continuation probability must less than 1 (for convergence) and greater than or equal to zero')
+
+    if mistake_probability >= 1 or mistake_probability < 0:
+        raise ValueError('Mistake probability must be a valid probability ie. in the range [0, 1]')
+
+    strategy_one_payoff = 0.
+    strategy_two_payoff = 0.
+
+    # Calculation should go in here via calling inner functions
+
+    return strategy_one_payoff, strategy_two_payoff
