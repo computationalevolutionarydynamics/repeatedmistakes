@@ -180,6 +180,10 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
                 q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
                                                              player_two.history + player_two_move]))
 
+        # Normalise by multiplying by 1 - continuation_probability
+        strategy_one_payoff *= (1 - continuation_probability)
+        strategy_two_payoff *= (1 - continuation_probability)
+
         return strategy_one_payoff, strategy_two_payoff
 
     # Validate some input
