@@ -28,8 +28,8 @@ def calculate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_pro
     if continuation_probability >= 1:
         raise ValueError('Continuation probability must be less than 1 for the sum to converge')
 
-    strategy_one_payoff = 0
-    strategy_two_payoff = 0
+    strategy_one_payoff = 0.
+    strategy_two_payoff = 0.
 
     # Create the player objects using the characterset from the payoff matrix
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
