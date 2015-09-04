@@ -2,7 +2,7 @@
 Contains functions used to simulate different scenarios involving the iterated prisoner's dilemma
 """
 from numpy.random import RandomState
-import statistics
+import numpy as np
 from math import sqrt
 
 
@@ -60,8 +60,8 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
         else:
             if number_of_trials > 100:
                 # Compute the sample standard deviation for both players
-                strategy_one_stdev = statistics.stdev(strategy_one_payoffs)
-                strategy_two_stdev = statistics.stdev(strategy_two_payoffs)
+                strategy_one_stdev = np.array(strategy_one_payoffs).std()
+                strategy_two_stdev = np.array(strategy_two_payoffs).std()
                 # Divide these by the sqrt of the number of trials
                 strategy_one_stdev /= sqrt(number_of_trials)
                 strategy_two_stdev /= sqrt(number_of_trials)
@@ -69,8 +69,8 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
                 if strategy_one_stdev < estimator_stdev and strategy_two_stdev < estimator_stdev:
                     break
 
-    strategy_one_normalised_payoff = statistics.mean(strategy_one_payoffs) * (1 - continuation_probability)
-    strategy_two_normalised_payoff = statistics.mean(strategy_two_payoffs) * (1 - continuation_probability)
+    strategy_one_normalised_payoff = np.array(strategy_one_payoffs).mean() * (1 - continuation_probability)
+    strategy_two_normalised_payoff = np.array(strategy_two_payoffs).mean() * (1 - continuation_probability)
     return strategy_one_normalised_payoff, strategy_two_normalised_payoff
 
 def perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance, mistake_probability=0.):
