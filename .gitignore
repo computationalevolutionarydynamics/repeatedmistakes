@@ -160,3 +160,6 @@ crashlytics-build.properties
 Session.vim
 .netrwhist
 *~
+
+
+.idea/
