@@ -9,7 +9,7 @@ Test all of the strategies in the strategies module for common functionality
 """
 # First we will define a strategy which gives us strings of length two. This will enable use to test the strategies
 # across all inputs for C and D
-two_characters = list(text(min_size=2, max_size=2))
+two_characters = text(min_size=2, max_size=2)
 
 # Next we need a strategy which will produce two texts with the same characterset and of the same length, but with
 # random lengths. We generate this as a tuple with the first element being the characterset and the second and third

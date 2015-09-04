@@ -13,10 +13,10 @@ from time import time
 def compute_values():
     payoff_matrix = PrisonersDilemmaPayoff()
     delta = 0.9
-    mu = 0.05
+    mu = 0.
 
     sim_time = time()
-    sim = simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.6)
+    sim = simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.1)
     sim_time = time() - sim_time
 
     calc_simple_time = time()
@@ -36,7 +36,7 @@ def compute_values():
     calc_simple_time = time() - calc_simple_time
 
     calc_naive_time = time()
-    calc_naive = calculate_payoff_with_mistakes(AllC, AllC, payoff_matrix, delta, mu, 0.0000001, 'naive')
+    calc_naive = calculate_payoff_with_mistakes(AllC, AllC, payoff_matrix, delta, mu, 0.000000001, 'naive')
     calc_naive_time = time() - calc_naive_time
 
     print("Calculated value (simplified) = " + str(calc_simple))
