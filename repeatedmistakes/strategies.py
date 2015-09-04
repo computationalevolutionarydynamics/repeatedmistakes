@@ -34,6 +34,7 @@ class Strategy():
     @history.setter
     def history(self, new_history):
         if set(new_history) <= {self.C, self.D}:
+            self.reset()
             self._history = new_history
         else:
             raise InvalidActionError("New history \n" + str(new_history) + "\n does not match the current " +
@@ -76,6 +77,24 @@ class Strategy():
         This method should not peform any update of internal state or history
         """
 
+    def opposite(self, move):
+        """
+        Returns the opposite move to the one given, in the context of this strategy's characterset
+
+        Args:
+            move: The move to reverse
+
+        Returns:
+            opposite; The opposite move to the one passed
+        """
+        if move not in [self.C, self.D]:
+            raise InvalidActionError("Action must be either " + str(self.C) + " or " + str(self.D))
+        else:
+            if move == self.D:
+                return self.C
+            else:
+                return self.D
+
     def reset(self):
         """
         This method resets the state of the strategy to an empty history
@@ -83,7 +102,7 @@ class Strategy():
         Any children of this class that use extra instance variables should override this method and reset instance
         variable as necessary
         """
-        self.history = []
+        self._history = []
 
 
 class AllC(Strategy):
