@@ -16,8 +16,8 @@ two_characters = text(min_size=2, max_size=2)
 # elements being the generated histories
 valid_history_strategy = two_characters.flatmap(
                         lambda chars: integers(min_value=0).flatmap(
-                            lambda n: tuples(just(chars), list(text(alphabet=chars, min_size=n, max_size=n)),
-                                       list(text(alphabet=chars, min_size=n, max_size=n))
+                            lambda n: tuples(just(chars), text(alphabet=chars, min_size=n, max_size=n),
+                                       text(alphabet=chars, min_size=n, max_size=n)
                                        )
                         )
                     )
@@ -26,8 +26,8 @@ valid_history_strategy = two_characters.flatmap(
 def test_strategy_passedCharactersetAndHistories_returnsCharacterInCharacterset(history, strategy):
     """Test that if we pass a characterset and histories to a strategy, it only returns actions in that characterset"""
     characterset = history[0]
-    strat_history = history[1]
-    opponent_history = history[2]
+    strat_history = list(history[1])
+    opponent_history = list(history[2])
     # Create an object with the correct characterset
     test_object = strategy(C=characterset[0], D=characterset[1])
     # Set up the object's history
@@ -38,7 +38,7 @@ def test_strategy_passedCharactersetAndHistories_returnsCharacterInCharacterset(
 # We want to define a strategy that will give us two random length text strings from the same characterset
 # We also want to remove cases where the lengths are the same
 length_mistmatch_strategy = two_characters.flatmap(
-                                lambda chars: tuples(just(chars), list(text(alphabet=chars)), list(text(alphabet=chars)))
+                                lambda chars: tuples(just(chars), text(alphabet=chars), text(alphabet=chars))
                             )
 
 @raises(HistoryLengthMismatch)
@@ -61,8 +61,8 @@ def test_strategy_historyLengthMismatch_raisesHistoryLengthMistmatchException(hi
 # Define a strategy that will generate one random text with one characterset and another with a different characterset
 different_characterset_strategy = two_characters.flatmap(
                                         lambda chars: integers(min_value=0).flatmap(
-                                            lambda n: tuples(just(chars), list(text(alphabet=chars, min_size=n, max_size=n)),
-                                                             list(text(alphabet=two_characters, min_size=n, max_size=n)))
+                                            lambda n: tuples(just(chars), text(alphabet=chars, min_size=n, max_size=n),
+                                                             text(alphabet=two_characters, min_size=n, max_size=n))
                                             )
                                         )
 
@@ -85,7 +85,7 @@ def test_strategy_invalidCharactersPassed_raisesInvalidActionError(history, stra
 # We want to test that if we pass a new history to a strategy with a different characterset, an exception is thrown
 # We need to define a strategy to generate two different charactersets, and a history made of the second one
 different_history_characterset_strategy = tuples(two_characters, two_characters).flatmap(
-                                            lambda tup: tuples(just(tup[0]), list(text(alphabet=tup[1]))))
+                                            lambda tup: tuples(just(tup[0]), text(alphabet=tup[1])))
 
 @raises(InvalidActionError)
 @given(history = different_history_characterset_strategy, strategy = sampled_from(strategy_list))
@@ -101,7 +101,7 @@ def test_strategy_historyWithWrongCharacterset_raisesInvalidActionError(history,
     test_object.history = strat_history
 
 # We want to test that given any history, the reset method will return the strategy's history to empty
-@given(history = two_characters.flatmap(lambda chars: tuples(just(chars), list(text(alphabet=chars)))),
+@given(history = two_characters.flatmap(lambda chars: tuples(just(chars), text(alphabet=chars))),
        strategy = sampled_from(strategy_list))
 def test_strategy_passHistoryThenReset_historyIsEmpty(history, strategy):
     """Test that regardless of characterset or history, reset clears the history"""
