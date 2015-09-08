@@ -76,10 +76,11 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
                     strategy_one_payoffs.append(trial[0])
                     strategy_two_payoffs.append(trial[1])
 
-            # If we didn't define an estimator then we've done all the trials we need
+            # If we didn't pass a target stdev for the estimator then we've done all the trials we need
             if estimator_stdev is None:
                 break
 
+            # If we have passed an estimator stdev target
             else:
                 # Compute the sample standard deviation for both players
                 strategy_one_stdev = np.array(strategy_one_payoffs).std()
@@ -91,7 +92,8 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
                 if strategy_one_stdev < estimator_stdev and strategy_two_stdev < estimator_stdev:
                     break
                 else:
-                    # Otherwise, add few more trials
+                    # Otherwise, recompute the trial chunk lists. This effectively queues some more trials for when
+                    # we go through the look again.
                     trial_chunks = [TRIAL_INCREMENT//cpu_count() for _ in range(cpu_count())]
 
     strategy_one_normalised_payoff = np.array(strategy_one_payoffs).mean() * (1 - continuation_probability)
