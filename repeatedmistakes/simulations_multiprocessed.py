@@ -102,7 +102,8 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
 
 
 def perform_multiple_trials(n, q, strategy_one, strategy_two, payoff_matrix, continuation_probability, mistake_probability):
-    # Create an PRNG instance and seed it
+    # Create an PRNG instance. This instance will take a random seed. This is good because we don't want all instances
+    # using the same seed and then creating the same data.
     random_instance = RandomState()
 
     # Create the players with the movesets from the payoff matrix
@@ -112,7 +113,9 @@ def perform_multiple_trials(n, q, strategy_one, strategy_two, payoff_matrix, con
     trial_list = []
 
     for _ in range(n):
-        # Perform the trials and add them to the dataframe
+        # Perform the trials and add them to the list
         trial_list.append(perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance, mistake_probability))
 
+    # When we've compute all of the trials in this chunk, put the results in the result queue so that the main process
+    # can aggregate them.
     q.put(trial_list)
