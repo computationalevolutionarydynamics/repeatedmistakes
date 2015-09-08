@@ -49,7 +49,8 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
     # Split the trials into chunks for each process
     trial_chunks = [trials//cpu_count() for _ in range(cpu_count())]
 
-    # Create a partial function with the values that don't change prefilled
+    # Since all of the parameters remain the same across each process other than the number of trials, we create
+    # a partial function with these values already prefilled, and map these onto the processes.
     partial_trials = partial(perform_multiple_trials, q=q, strategy_one=strategy_one, strategy_two=strategy_two,
                              payoff_matrix=payoff_matrix,
                              continuation_probability=continuation_probability,
