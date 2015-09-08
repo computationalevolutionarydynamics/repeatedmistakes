@@ -11,9 +11,8 @@ from functools import partial
 
 TRIAL_INCREMENT = 1000
 
-
 def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
-                               mistake_probability=0., trials=1000, seed=1234, estimator_stdev=None):
+                               mistake_probability=0., trials=1000, estimator_stdev=None):
     """
     Calculate the normalised payoff for each strategy in the iterated prisoner's dilemma
 
@@ -35,7 +34,6 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
         continuation_probability (float): The probability of continuing the game
         mistake_probability (float): The probability of a single player making a single mistake in a single round
         trials (int): The number of games to simulate in order to calculate the normalised payoff
-        seed (int): The seed for the PRNG
         estimator_stdev (float): The allowable deviation of our estimator.
 
     Returns:
