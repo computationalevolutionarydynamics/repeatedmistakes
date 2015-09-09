@@ -8,23 +8,28 @@ from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 from repeatedmistakes.simulations import simulate_payoff
 from repeatedmistakes.simulations_multiprocessed import simulate_payoff as mult_simulate_payoff
 from repeatedmistakes.calculations import calculate_payoff_with_mistakes
-
-import cProfile
+from repeatedmistakes.calculations_multiprocessed import calculate_payoff_with_mistakes as mult_calculate_payoff
 
 from time import time
 
 def compute_values():
     payoff_matrix = PrisonersDilemmaPayoff()
     delta = 0.9
-    mu = 0.
+    mu = 0.05
 
     sim_time = time()
     sim = simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.2)
     sim_time = time() - sim_time
 
+    print("Simulated value = " + str(sim))
+    print("Time taken " + str(sim_time))
+
     mult_sim_time = time()
     mult_sim = mult_simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.2)
     mult_sim_time = time() - mult_sim_time
+
+    print("Multiprocessed simulated value = " + str(mult_sim))
+    print("Time taken " + str(mult_sim_time))
 
     calc_simple_time = time()
     calc_simple = [0., 0.]
@@ -42,18 +47,22 @@ def compute_values():
     calc_simple[1] *= (1 - delta)
     calc_simple_time = time() - calc_simple_time
 
-    calc_naive_time = time()
-    calc_naive = calculate_payoff_with_mistakes(AllC, AllC, payoff_matrix, delta, mu, 0.000001, 'naive')
-    calc_naive_time = time() - calc_naive_time
-
     print("Calculated value (simplified) = " + str(calc_simple))
     print("Time taken " + str(calc_simple_time))
+
+    calc_naive_time = time()
+    calc_naive = calculate_payoff_with_mistakes(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')
+    calc_naive_time = time() - calc_naive_time
+
     print("Calculated value (naive) = " + str(calc_naive))
     print("Time taken " + str(calc_naive_time))
-    print("Simulated value = " + str(sim))
-    print("Time taken " + str(sim_time))
-    print("Multiprocessed simulated value = " + str(mult_sim))
-    print("Time taken " + str(mult_sim_time))
+
+    mult_calc_naive_time = time()
+    mult_calc_naive = mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')
+    mult_calc_naive_time = time() - mult_calc_naive_time
+
+    print("Multiprocessed calculated value (naive) = " + str(mult_calc_naive))
+    print("Time taken " + str(mult_calc_naive_time))
 
 if __name__ == '__main__':
     compute_values()
