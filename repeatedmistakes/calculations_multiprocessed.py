@@ -119,6 +119,8 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
     player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
 
+    per_process_total = [0., 0.]
+
     while True:
         try:
             # Get the first item in the queue
@@ -136,7 +138,8 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
             payoff = payoff_matrix.payoff(player_one_move, player_two_move)
             strategy_one_payoff = payoff[0] * ((1 - mistake_probability) ** 2) * node.coefficient
             strategy_two_payoff = payoff[1] * ((1 - mistake_probability) ** 2) * node.coefficient
-            resultq.put((strategy_one_payoff, strategy_two_payoff))
+            per_process_total[0] += strategy_one_payoff
+            per_process_total[1] += strategy_two_payoff
 
             # Add an item to the queue, if the max term size is large enough
             coefficient = continuation_probability * ((1 - mistake_probability) ** 2) * node.coefficient
@@ -151,7 +154,8 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
             payoff = payoff_matrix.payoff(player_one_move, player_two_move)
             strategy_one_payoff = payoff[0] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
             strategy_two_payoff = payoff[1] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
-            resultq.put((strategy_one_payoff, strategy_two_payoff))
+            per_process_total[0] += strategy_one_payoff
+            per_process_total[1] += strategy_two_payoff
 
             # Add to the queue if max term size is large enough
             coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
@@ -167,7 +171,8 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
             payoff = payoff_matrix.payoff(player_one_move, player_two_move)
             strategy_one_payoff = payoff[0] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
             strategy_two_payoff = payoff[1] * (mistake_probability * (1 - mistake_probability)) * node.coefficient
-            resultq.put((strategy_one_payoff, strategy_two_payoff))
+            per_process_total[0] += strategy_one_payoff
+            per_process_total[1] += strategy_two_payoff
 
             # Add to the queue if the max term size is large enough
             coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
@@ -181,7 +186,8 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
             payoff = payoff_matrix.payoff(player_one_move, player_two_move)
             strategy_one_payoff = payoff[0] * (mistake_probability ** 2) * node.coefficient
             strategy_two_payoff = payoff[1] * (mistake_probability ** 2) * node.coefficient
-            resultq.put((strategy_one_payoff, strategy_two_payoff))
+            per_process_total[0] += strategy_one_payoff
+            per_process_total[1] += strategy_two_payoff
 
             # Add to the queue if the max term size is large enough
             coefficient = continuation_probability * (mistake_probability ** 2) * node.coefficient
@@ -192,4 +198,5 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
         except queue.Empty:
             # If the queue is empty for longer than 1 second, we're going to assume that we've run out of data
             # to process and we'll return
+            resultq.put(per_process_total)
             return
