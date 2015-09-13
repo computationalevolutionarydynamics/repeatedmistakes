@@ -119,12 +119,25 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
     player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
 
+    # Initialise per process totals
     per_process_total = [0., 0.]
+
+    # Set up an internal queue. This minimizes overhead by allowing each queue to work on chunks of the tree, only
+    # stopping to get another chunk once it has finished
+    internalq = queue.Queue()
+
+    # Figure out the max payoff, since this doesn't change
+    payoff_max = payoff_matrix.max()
 
     while True:
         try:
-            # Get the first item in the queue
-            node = nodeq.get(True, 1)
+            try:
+                # Get the first item in the internal queue
+                node = internalq.get_nowait()
+            except queue.Empty:
+                # If it's empty, get the first item in the external queue instead
+                node = nodeq.get(True, 0.1)
+
 
             # Process the no-mistake case
             # Unpack the histories
@@ -143,9 +156,7 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add an item to the queue, if the max term size is large enough
             coefficient = continuation_probability * ((1 - mistake_probability) ** 2) * node.coefficient
-            if coefficient * payoff_matrix.max() > epsilon:
-                nodeq.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                                 player_two.history + player_two_move]))
+            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
 
             # Figure out the case for one mistake
             # Compute the payoff
@@ -159,9 +170,7 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add to the queue if max term size is large enough
             coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
-            if coefficient * payoff_matrix.max() > epsilon:
-                nodeq.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                                 player_two.history + player_two_move]))
+            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
 
             # Now the other one mistake case
             # Reverse the mistake we just made
@@ -176,9 +185,7 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add to the queue if the max term size is large enough
             coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
-            if coefficient * payoff_matrix.max() > epsilon:
-                nodeq.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                                 player_two.history + player_two_move]))
+            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
 
             # Lastly the two mistake case
             # Make another mistake for a total of two (the second player has already made a mistake)
@@ -191,12 +198,49 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add to the queue if the max term size is large enough
             coefficient = continuation_probability * (mistake_probability ** 2) * node.coefficient
-            if coefficient * payoff_matrix.max() > epsilon:
-                nodeq.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                                 player_two.history + player_two_move]))
+            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
 
         except queue.Empty:
-            # If the queue is empty for longer than 1 second, we're going to assume that we've run out of data
-            # to process and we'll return
+            # If the external queue is empty for longer than .5 of a second, we're going to take that as a sign that
+            # there are no mure pieces of the tree to process so we'll return
             resultq.put(per_process_total)
             return
+
+def publish_node(coefficient, payoff_matrix_max, epsilon, p_one_history, p_two_history, internal_queue, external_queue):
+    """
+    Publish a node to a particular queue, depending on the size of the resultant maximum term and the length of the
+    history
+
+    This method first decides whether we should even publish to the queue by comparing the product of the max term size
+    and the epsilon. If the max term size * coefficient is less than the epsilon, we don't publish to the queue.
+
+    If the max term size * epsilon is greater than the epsilon, we must decide which queue to publish too.
+    If the length of the history is sufficiently small (as determined by a constant for now, possibly a variable later
+    if we decide it should be tweakable) then we publish to the global queue that all processes pull form. If the
+    history length is greater than this constant size, we publish to an internal queue.
+
+    Args:
+        coefficient (float): The coefficient of the node to be published.
+        payoff_matrix_max (float): The maximum payoff for the payoff matrix. Used to determine if we should publish
+            the node.
+        epsilon (float): The term size below which we no longer publish nodes.
+        p_one_history (string): The history of player one. Used as part of the node to publish
+        p_two_history (string): The history of player two. Used as part of the node to publish
+        internal_queue (Queue): The internal queue to publish to if the history length is large
+        external_queue (Queue): The external queue to publish to if the history length is small
+    """
+    EXTERNAL_HISTORY_LIMIT = 3
+    # Decide if we should publish or not
+    if coefficient * payoff_matrix_max < epsilon:
+        # Don't publish
+        pass
+    else:
+        # Create the node object
+        new_node = Node(coefficient, [p_one_history, p_two_history])
+        # Figure out where the node should go
+        if len(p_one_history) <= EXTERNAL_HISTORY_LIMIT:
+            # Publish to the external history
+            external_queue.put(new_node)
+        else:
+            # Publish to the internal queue
+            internal_queue.put(new_node)
