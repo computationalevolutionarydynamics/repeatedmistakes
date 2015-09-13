@@ -10,6 +10,8 @@ from repeatedmistakes.simulations_multiprocessed import simulate_payoff as mult_
 from repeatedmistakes.calculations import calculate_payoff_with_mistakes
 from repeatedmistakes.calculations_multiprocessed import calculate_payoff_with_mistakes as mult_calculate_payoff
 
+import profile
+
 from time import time
 
 def compute_values():
@@ -18,14 +20,14 @@ def compute_values():
     mu = 0.05
 
     sim_time = time()
-    sim = simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.2)
+    sim = simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.4)
     sim_time = time() - sim_time
 
     print("Simulated value = " + str(sim))
     print("Time taken " + str(sim_time))
 
     mult_sim_time = time()
-    mult_sim = mult_simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.2)
+    mult_sim = mult_simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.4)
     mult_sim_time = time() - mult_sim_time
 
     print("Multiprocessed simulated value = " + str(mult_sim))
@@ -59,6 +61,8 @@ def compute_values():
 
     mult_calc_naive_time = time()
     mult_calc_naive = mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')
+#    profile.runctx("mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')",
+#                   {'mult_calculate_payoff': mult_calculate_payoff, 'AllC':AllC, 'payoff_matrix': payoff_matrix, 'delta': delta, 'mu': mu}, {})
     mult_calc_naive_time = time() - mult_calc_naive_time
 
     print("Multiprocessed calculated value (naive) = " + str(mult_calc_naive))
