@@ -237,7 +237,7 @@ def publish_node(coefficient, payoff_matrix_max, epsilon, p_one_history, p_two_h
         internal_queue (Queue): The internal queue to publish to if the history length is large
         external_queue (Queue): The external queue to publish to if the history length is small
     """
-    EXTERNAL_HISTORY_LIMIT = 3
+    EXTERNAL_HISTORY_LIMIT = 7
     # Decide if we should publish or not
     if coefficient * payoff_matrix_max < epsilon:
         # Don't publish
