@@ -6,6 +6,8 @@ from multiprocessing import Manager, cpu_count, Process
 from functools import partial
 import queue
 from collections import namedtuple
+import cProfile
+import pstats
 
 # Set up a namedtuple to structure the data on our queue
 Node = namedtuple('Node',['coefficient', 'history'])
@@ -97,6 +99,12 @@ def naive_method(strategy_one, strategy_two, payoff_matrix, continuation_probabi
     # Join the processes
     for proc in processes:
         proc.join()
+#    cProfile.runctx('naive_partial()', globals(), locals(), 'profiler_results')
+#    p = pstats.Stats('profiler_results')
+#    p.strip_dirs()
+#    p.sort_stats('tottime', 'cumtime')
+#    p.print_callers()
+#    p.print_stats()
 
     # Read the values from the result queue and add them up
     while not resultq.empty():
@@ -156,7 +164,7 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add an item to the queue, if the max term size is large enough
             coefficient = continuation_probability * ((1 - mistake_probability) ** 2) * node.coefficient
-            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
+            publish_node(coefficient, payoff_max, epsilon, player_one.history + player_one_move, player_two.history + player_two_move, internalq, nodeq)
 
             # Figure out the case for one mistake
             # Compute the payoff
@@ -170,7 +178,7 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add to the queue if max term size is large enough
             coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
-            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
+            publish_node(coefficient, payoff_max, epsilon, player_one.history + player_one_move, player_two.history + player_two_move, internalq, nodeq)
 
             # Now the other one mistake case
             # Reverse the mistake we just made
@@ -185,7 +193,7 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add to the queue if the max term size is large enough
             coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
-            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
+            publish_node(coefficient, payoff_max, epsilon, player_one.history + player_one_move, player_two.history + player_two_move, internalq, nodeq)
 
             # Lastly the two mistake case
             # Make another mistake for a total of two (the second player has already made a mistake)
@@ -198,7 +206,7 @@ def naive_worker(nodeq, resultq, strategy_one, strategy_two, payoff_matrix, cont
 
             # Add to the queue if the max term size is large enough
             coefficient = continuation_probability * (mistake_probability ** 2) * node.coefficient
-            publish_node(coefficient, payoff_max, epsilon, player_one.history, player_two.history, internalq, nodeq)
+            publish_node(coefficient, payoff_max, epsilon, player_one.history + player_one_move, player_two.history + player_two_move, internalq, nodeq)
 
         except queue.Empty:
             # If the external queue is empty for longer than .5 of a second, we're going to take that as a sign that
