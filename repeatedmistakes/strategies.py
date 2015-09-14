@@ -59,7 +59,7 @@ class Strategy():
         Returns:
             action: The action taken by the strategy, either a C or a D
         """
-        if not all([move in [self.C, self.D] for move in opponent_history]):
+        if not set(opponent_history) <= set([self.C, self.D]):
             raise InvalidActionError("Action must be either " + str(self.C) + " or " + str(self.D))
 
         if len(opponent_history) != len(self.history):
