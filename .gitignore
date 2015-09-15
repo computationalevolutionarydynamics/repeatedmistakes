@@ -163,3 +163,5 @@ Session.vim
 
 
 .idea/*.*
+
+.DS_Store
