@@ -139,7 +139,7 @@ class TitForTat(Strategy):
     opponent thereafter
     """
     def _strategy(self, opponent_history):
-        if self.history == []:
+        if len(self.history) == 0:
             return self.C
         else:
             if opponent_history[-1] == self.C:
@@ -154,7 +154,7 @@ class InverseTitForTat(Strategy):
     the opposite of the opponent's last move thereafter
     """
     def _strategy(self, opponent_history):
-        if self.history == []:
+        if len(self.history) == 0:
             return self.C
         else:
             if opponent_history[-1] == self.C:
@@ -169,7 +169,7 @@ class SuspiciousTitForTat(Strategy):
     the opponent thereafter
     """
     def _strategy(self, opponent_history):
-        if self.history == []:
+        if len(self.history) == 0:
             return self.D
         else:
             if opponent_history[-1] == self.C:
@@ -184,7 +184,7 @@ class SuspiciousInverseTitForTat(Strategy):
     then does the opposite of the opponent's last move thereafter
     """
     def _strategy(self, opponent_history):
-        if self.history == []:
+        if len(self.history) == 0:
             return self.D
         else:
             if opponent_history[-1] == self.C:
@@ -199,7 +199,7 @@ class NiceAllD(Strategy):
     other rounds.
     """
     def _strategy(self, opponent_history):
-        if self.history == []:
+        if len(self.history) == 0:
             return self.C
         else:
             return self.D
@@ -211,7 +211,7 @@ class SuspiciousAllC(Strategy):
     for all other rounds.
     """
     def _strategy(self, opponent_history):
-        if self.history == []:
+        if len(self.history) == 0:
             return self.D
         else:
             return self.C
