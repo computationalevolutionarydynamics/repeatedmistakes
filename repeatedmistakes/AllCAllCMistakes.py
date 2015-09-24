@@ -17,7 +17,7 @@ from time import time
 def compute_values():
     payoff_matrix = PrisonersDilemmaPayoff()
     delta = 0.9
-    mu = 0.05
+    mu = 0.0005
 
     sim_time = time()
     sim = simulate_payoff(AllC, AllC, payoff_matrix, delta, mistake_probability=mu, estimator_stdev=0.4)
