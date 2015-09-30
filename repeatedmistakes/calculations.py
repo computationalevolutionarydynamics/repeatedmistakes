@@ -4,6 +4,8 @@ computations.
 """
 from queue import Queue
 from collections import namedtuple
+import scipy.optimize
+import math
 
 def calculate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, epsilon):
     """
@@ -101,8 +103,8 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
     """
     def precompute_method(strategy_one, strategy_two, payoff_matrix, continuation_probability, mistake_probability, epsilon):
         # First task, solve for the maximum game length
-        maximum_game_length = 1
-
+        # To do this, we create a function which when given a game length, computes the probability that the game
+        # continues for this long with no mistakes, based on the cont prob and the mistake prob
         def no_mistake_prob(n):
             """
             Compute the probability that a game of length exactly n occurs, with no mistakes
@@ -113,12 +115,11 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
             return_val *= (1 - mistake_probability) ** (2 * n)
             return return_val
 
-        # Compute the no mistake prob times the max payoff until it's less than epsilon
-        while no_mistake_prob(maximum_game_length) * payoff_matrix.max() > epsilon:
-            maximum_game_length += 1
+        # Now we want to solve this to see when this is less than epsilon
+        maximum_game_length = scipy.optimize.broyden1(F=lambda x: no_mistake_prob(x) * payoff_matrix.max() - epsilon, x0=20)
 
-        # Back off 1 to get the largest value that isn't below epsilon
-        maximum_game_length -= 1
+        # We need to take the floor of this value
+        maximum_game_length = math.floor(maximum_game_length)
 
         # Next task, for each value between 1 and maximum_game_length, figure out how many mistakes we can make while
         # still remaining above the threshold
@@ -136,10 +137,86 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
         # number of rounds and mistakes is within the threshold
         length_mistake_list = []
 
+        # Loop over all n
         for n in range(1, maximum_game_length + 1):
-            for k in range(0, 2 * n + 1):
-                if mistake_prob(n, k) * payoff_matrix.max() > epsilon:
-                    length_mistake_list.append((n, k))
+            # Solve for k, the number of mistakes
+            mistake_length = scipy.optimize.broyden1(F=lambda x: mistake_prob(n, x) * payoff_matrix.max() - epsilon, x0=3)
+            # Take the floor
+            mistake_length = math.floor(mistake_length)
+            # Add it to the list
+            length_mistake_list.append((n, mistake_length))
+
+        # Beginning with game length 1, we want to start processing each case
+
+        # Create some strategy objects to compute moves
+        player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
+        player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
+
+        # Create values to aggregate payoff in
+        strategy_one_payoff = 0.
+        strategy_two_payoff = 0.
+
+        # We want to store history:payoff pairs in a table for easy access
+        history_payoff_dict = dict()
+        # Add the empty history to this dictionary
+        history_payoff_dict[([],[])] = (0, 0)
+
+        # Start calculating
+        # First, compute the no mistake cases and history
+        # Reset the players
+        player_one.reset()
+        player_two.reset()
+        # Create some empty histories
+        player_one_history = []
+        player_two_history = []
+        # Create a variable for this history's payoff
+        player_one_payoff = 0.
+        player_two_payoff = 0.
+        # Figure out moves up to the length n
+        for n in range(1, maximum_game_length):
+            # Compute moves
+            player_one_move = player_one.next_move(player_two_history)
+            player_two_move = player_two.next_move(player_one_history)
+            # Update histories
+            player_one_history.append(player_one_move)
+            player_two_history.append(player_two_move)
+            # Find payoff
+            payoff = payoff_matrix.payoff(player_one_move, player_two_move)
+            # Add payoffs to totals
+            player_one_payoff += payoff[0]
+            player_two_payoff += payoff[1]
+            # Compute the probability of reaching this state
+            prob = no_mistake_prob(n)
+            # Add the probability times to payoff to the totals
+            strategy_one_payoff += player_one_payoff * prob
+            strategy_two_payoff += player_two_payoff * prob
+            # Add the current accumulated payoff to the dictionary
+            history_payoff_dict[(player_one_history, player_two_history)] = (player_one_payoff, player_two_payoff)
+
+        # Put these histories into new variables
+        no_mistake_history_one = player_one_history
+        no_mistake_history_two = player_two_history
+
+        # Now we're going to deal with the mistake cases
+        for length, max_mistakes in length_mistake_list:
+            # Make sure the number of mistakes isn't zero
+            if max_mistakes > 0:
+                # For every number of mistakes from 1 to the max number
+                for mistakes in range(1, max_mistakes+1):
+                    # For every position starting from the end of the history
+                    for position in range(length - 1, -1, -1):
+                        # For each strategy
+                        # Compute a prefix history. This is just the history up to the point up to where we've made
+                        # a mistake
+                        prefix_history = (no_mistake_history_one[0:position],
+                                          no_mistake_history_two[0:position])
+                        # Look up the prefix history in the dictionary
+                        prefix_payoff = history_payoff_dict[(prefix_history[0], prefix_history[1])]
+                        # Compute the history and associated payoff from here on
+                        for _ in range(position, length)
+
+
+
 
 
     def naive_method(strategy_one, strategy_two, payoff_matrix, continuation_probability, mistake_probability, epsilon):
