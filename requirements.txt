@@ -1,5 +1,4 @@
 hypothesis
 numpy
-scipy
 python-coveralls
 nosexcover
