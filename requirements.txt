@@ -2,3 +2,4 @@ hypothesis
 numpy
 python-coveralls
 nosexcover
+scipy
