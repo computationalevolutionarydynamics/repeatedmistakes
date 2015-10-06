@@ -4,8 +4,6 @@ computations.
 """
 from queue import Queue
 from collections import namedtuple
-import scipy.optimize
-import math
 
 def calculate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, epsilon):
     """
