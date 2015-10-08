@@ -14,17 +14,17 @@ def expected_only(strategy_one, strategy_two, payoff_matrix, continuation_probab
     from games with length equal to the expected game length
     """
     # Compute the expected number of rounds
-    expected_rounds = math.floor(1 / continuation_probability)
+    expected_rounds = math.floor(1 / (1 - continuation_probability))
 
     # Set up a function that we can solve for the maximum number of mistakes above the threshold
     def max_mistakes(n):
         term = (continuation_probability ** (expected_rounds - 1)) * (1 - continuation_probability)
-        term = term * (mistake_probability ** (2 * expected_rounds - n))
-        term = term * (1 - mistake_probability) ** n
+        term = term * ((1 - mistake_probability) ** (2 * expected_rounds - n))
+        term = term * (mistake_probability ** n)
         return term
 
     # Solve for the maximum number of allowable mistakes
-    max_mistakes = broyden1(lambda x: max_mistakes(x) - epsilon, x0=2)
+    max_mistakes = broyden1(lambda x: max_mistakes(x) - epsilon, 0)
 
     # Take the floor
     max_mistakes = math.floor(max_mistakes)
@@ -94,7 +94,7 @@ def expected_only(strategy_one, strategy_two, payoff_matrix, continuation_probab
             player_two_payoff += payoff[1]
 
         # Compute the coefficient for the number of mistakes
-        mistake_coefficient = (mistake_probability ** (2 * expected_rounds - frame.mistakes)) * (1 - mistake_probability) ** frame.mistakes
+        mistake_coefficient = ((1 - mistake_probability) ** (2 * expected_rounds - frame.mistakes)) * (mistake_probability ** frame.mistakes)
 
         # Finally, multiply each player's payoff by the two coefficients and add to the total
         player_one_expected_payoff += player_one_payoff * game_length_coefficient * mistake_coefficient
