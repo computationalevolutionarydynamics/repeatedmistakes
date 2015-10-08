@@ -61,8 +61,6 @@ def compute_values():
 
     mult_calc_naive_time = time()
     mult_calc_naive = mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')
-#    profile.runctx("mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')",
-#                   {'mult_calculate_payoff': mult_calculate_payoff, 'AllC':AllC, 'payoff_matrix': payoff_matrix, 'delta': delta, 'mu': mu}, {})
     mult_calc_naive_time = time() - mult_calc_naive_time
 
     print("Multiprocessed calculated value (naive) = " + str(mult_calc_naive))
