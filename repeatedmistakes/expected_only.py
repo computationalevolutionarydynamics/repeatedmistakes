@@ -76,6 +76,29 @@ def expected_only(strategy_one, strategy_two, payoff_matrix, continuation_probab
 
     # Now we should have a list that contains all of the correct length games with upto the maximum number of mistakes
     # Now we loop through each case, compute the total payoff and multiply by the coefficient
+    # Set up variables to hold the expected payoff
+    player_one_expected_payoff = 0
+    player_two_expected_payoff = 0
+    # We want the game length portion of the coefficient, since this wont change
+    game_length_coefficient = (continuation_probability ** (expected_rounds - 1)) * (1 - continuation_probability)
+
     for frame in frame_list:
         # Figure out the total payoff
+        player_one_payoff = 0
+        player_two_payoff = 0
 
+        # Loop over the history, adding the payoff each time
+        for player_one_move, player_two_move in zip(frame.player_one_history, frame.player_two_history):
+            payoff = payoff_matrix.payoff(player_one_move, player_two_move)
+            player_one_payoff += payoff[0]
+            player_two_payoff += payoff[1]
+
+        # Compute the coefficient for the number of mistakes
+        mistake_coefficient = (mistake_probability ** (2 * expected_rounds - frame.mistakes)) * (1 - mistake_probability) ** frame.mistakes
+
+        # Finally, multiply each player's payoff by the two coefficients and add to the total
+        player_one_expected_payoff += player_one_payoff * game_length_coefficient * mistake_coefficient
+        player_two_expected_payoff += player_two_payoff * game_length_coefficient * mistake_coefficient
+
+    # Return the results
+    return player_one_expected_payoff, player_two_expected_payoff
