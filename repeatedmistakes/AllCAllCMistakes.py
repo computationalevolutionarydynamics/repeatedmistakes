@@ -9,8 +9,7 @@ from repeatedmistakes.simulations import simulate_payoff
 from repeatedmistakes.simulations_multiprocessed import simulate_payoff as mult_simulate_payoff
 from repeatedmistakes.calculations import calculate_payoff_with_mistakes
 from repeatedmistakes.calculations_multiprocessed import calculate_payoff_with_mistakes as mult_calculate_payoff
-
-import profile
+from repeatedmistakes.expected_only import expected_only
 
 from time import time
 
@@ -65,6 +64,13 @@ def compute_values():
 
     print("Multiprocessed calculated value (naive) = " + str(mult_calc_naive))
     print("Time taken " + str(mult_calc_naive_time))
+
+    expected_only_time = time()
+    expected_only_value = expected_only(AllC, AllC, payoff_matrix, delta, mu, 1e-5)
+    expected_only_time = time() - expected_only_time
+
+    print("Expected value only calculated value = " + str(expected_only_value))
+    print("Time taken " + str(expected_only_time))
 
 if __name__ == '__main__':
     compute_values()
