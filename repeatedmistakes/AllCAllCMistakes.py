@@ -52,7 +52,7 @@ def compute_values():
     print("Time taken " + str(calc_simple_time))
 
     calc_naive_time = time()
-    calc_naive = calculate_payoff_with_mistakes(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')
+    calc_naive = calculate_payoff_with_mistakes(AllC, AllC, payoff_matrix, delta, mu, 1e-5)
     calc_naive_time = time() - calc_naive_time
 
     print("Calculated value (naive) = " + str(calc_naive))
