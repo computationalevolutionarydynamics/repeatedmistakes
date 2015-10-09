@@ -59,7 +59,7 @@ def compute_values():
     print("Time taken " + str(calc_naive_time))
 
     mult_calc_naive_time = time()
-    mult_calc_naive = mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5, 'naive')
+    mult_calc_naive = mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5)
     mult_calc_naive_time = time() - mult_calc_naive_time
 
     print("Multiprocessed calculated value (naive) = " + str(mult_calc_naive))
