@@ -4,6 +4,7 @@ computations.
 """
 from queue import Queue
 from collections import namedtuple
+from scipy.optimize import broyden1
 
 def calculate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability, epsilon):
     """
@@ -100,10 +101,10 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
     q = Queue()
 
     # Set up a namedtuple to structure the data on our queue
-    Node = namedtuple('Node',['coefficient', 'history'])
+    Node = namedtuple('Node',['coefficient', 'history', 'mistakes'])
 
-    # We initialise the queue with an empty history and a term of 1
-    q.put(Node(coefficient=1, history=('', '')))
+    # We initialise the queue with an empty history and a term of 1 which of course has zero mistakes
+    q.put(Node(coefficient=1, history=('', ''), mistakes=0))
 
     # Set up the values we're going to return
     strategy_one_payoff = 0.
@@ -134,7 +135,7 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
         coefficient = continuation_probability * ((1 - mistake_probability) ** 2) * node.coefficient
         if coefficient * payoff_matrix.max() > epsilon:
             q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                         player_two.history + player_two_move]))
+                                                         player_two.history + player_two_move], mistakes=node.mistakes))
 
         # Figure out the case for one mistake
         # Compute the payoff
@@ -147,8 +148,10 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
         # Add to the queue if max term size is large enough
         coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
         if coefficient * payoff_matrix.max() > epsilon:
-            q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                         player_two.history + player_two_move]))
+            q.put(Node(coefficient=coefficient,
+                       history=[player_one.history + player_one_move,
+                                player_two.history + player_two_move],
+                       mistakes=node.mistakes + 1))
 
         # Now the other one mistake case
         # Reverse the mistake we just made
@@ -162,9 +165,10 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
         # Add to the queue if the max term size is large enough
         coefficient = continuation_probability * (mistake_probability * (1 - mistake_probability)) * node.coefficient
         if coefficient * payoff_matrix.max() > epsilon:
-            q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                         player_two.history + player_two_move]))
-
+            q.put(Node(coefficient=coefficient,
+                       history=[player_one.history + player_one_move,
+                                player_two.history + player_two_move],
+                       mistakes=node.mistakes + 1))
         # Lastly the two mistake case
         # Make another mistake for a total of two (the second player has already made a mistake)
         player_one_move = player_one.opposite(player_one_move)
@@ -175,8 +179,10 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
         # Add to the queue if the max term size is large enough
         coefficient = continuation_probability * (mistake_probability ** 2) * node.coefficient
         if coefficient * payoff_matrix.max() > epsilon:
-            q.put(Node(coefficient=coefficient, history=[player_one.history + player_one_move,
-                                                         player_two.history + player_two_move]))
+            q.put(Node(coefficient=coefficient,
+                       history=[player_one.history + player_one_move,
+                                player_two.history + player_two_move],
+                       mistakes=node.mistakes + 2))
 
     # Normalise by multiplying by 1 - continuation_probability
     strategy_one_payoff *= (1 - continuation_probability)
