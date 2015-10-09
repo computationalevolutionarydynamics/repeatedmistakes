@@ -115,40 +115,6 @@ def calculate_payoff_with_mistakes(strategy_one, strategy_two, payoff_matrix, co
     player_one = strategy_one(C=payoff_matrix.C, D=payoff_matrix.D)
     player_two = strategy_two(C=payoff_matrix.C, D=payoff_matrix.D)
 
-    # Store the maximum payoff in a variable
-    max_payoff = payoff_matrix.max()
-
-    # Now we need to solve for some values. Firstly, we solve for the maximum history length such that the new term
-    # we add to the sum is greater than epsilon
-    # We need to define a function to solve for
-    def history_prob(n):
-        coefficient = (continuation_probability ** n) * ((1 - mistake_probability) ** (2 * n))
-        term = max_payoff * coefficient
-        return term
-
-    # Now solve for the longest possible game with our given epsilon
-    max_game_length = broyden1(lambda x: history_prob(x) - epsilon, 0)
-
-    # Round this value down
-    max_game_length = math.floor(max_game_length)
-
-    # Next, for each possible value of game length, we have to solve for the maximum allowable number of mistakes
-    # that still keeps the term size above epsilon
-    def mistake_prob(n, mistakes):
-        coefficient = (continuation_probability ** n) * ((1 - mistake_probability) ** (2 * n - mistakes))
-        coefficient *= (mistake_probability ** mistakes)
-        term = max_payoff * coefficient
-        return term
-
-    # Now, for each value between 1 and max_game_length, we need to solve for the above value
-    # We set up a list to hold the results
-    allowable_mistakes = []
-    allowable_mistakes.append(None) # First item should be None since we never use game length 0
-    for i in range(1, max_game_length+1):
-        max_mistakes = broyden1(lambda x: mistake_prob(i, x) - epsilon, 0)
-        # Round down and append to the list
-        allowable_mistakes.append(math.floor(max_mistakes))
-
     while not q.empty():
         # Get the first item in the queue
         node = q.get()
