@@ -55,14 +55,14 @@ def compute_values():
     calc_naive = calculate_payoff_with_mistakes(AllC, AllC, payoff_matrix, delta, mu, 1e-5)
     calc_naive_time = time() - calc_naive_time
 
-    print("Calculated value (naive) = " + str(calc_naive))
+    print("Calculated value = " + str(calc_naive))
     print("Time taken " + str(calc_naive_time))
 
     mult_calc_naive_time = time()
     mult_calc_naive = mult_calculate_payoff(AllC, AllC, payoff_matrix, delta, mu, 1e-5)
     mult_calc_naive_time = time() - mult_calc_naive_time
 
-    print("Multiprocessed calculated value (naive) = " + str(mult_calc_naive))
+    print("Multiprocessed calculated value = " + str(mult_calc_naive))
     print("Time taken " + str(mult_calc_naive_time))
 
     expected_only_time = time()
