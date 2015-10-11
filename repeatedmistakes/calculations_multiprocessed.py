@@ -6,8 +6,6 @@ from multiprocessing import Manager, cpu_count, Process
 from functools import partial
 import queue
 from collections import namedtuple
-import cProfile
-import pstats
 
 # Set up a namedtuple to structure the data on our queue
 Node = namedtuple('Node',['coefficient', 'history'])
