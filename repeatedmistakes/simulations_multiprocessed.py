@@ -6,7 +6,7 @@ from numpy.random import RandomState
 import numpy as np
 from math import sqrt
 from repeatedmistakes.simulations import perform_trial
-from multiprocessing import Pool, Queue, cpu_count, Manager
+from multiprocessing import Pool, cpu_count, Manager
 from functools import partial
 
 TRIAL_INCREMENT = 1000
