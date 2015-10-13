@@ -444,7 +444,7 @@ class TFNT(Strategy):
     Args:
         n (int): The number of rounds to check for a cooperation
     """
-    def __init__(self, n):
+    def __init__(self, n=2):
         super().__init__(self)
         self.n = n
 
