@@ -7,7 +7,7 @@ from math import sqrt
 
 
 def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
-                               mistake_probability=0., trials=1000, seed=1234, estimator_stdev=None):
+                    mistake_probability=0., trials=1000, seed=1234, estimator_stdev=None):
     """
     Calculate the normalised payoff for each strategy in the iterated prisoner's dilemma
 
@@ -73,7 +73,9 @@ def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_prob
     strategy_two_normalised_payoff = np.array(strategy_two_payoffs).mean() * (1 - continuation_probability)
     return strategy_one_normalised_payoff, strategy_two_normalised_payoff
 
-def perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance, mistake_probability=0.):
+
+def perform_trial(player_one, player_two, payoff_matrix, continuation_probability, random_instance,
+                  mistake_probability=0.):
     """
     Perform one game of the iterated prisoners dilemma and return the payoff for each player
 
