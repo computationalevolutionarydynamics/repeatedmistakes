@@ -530,19 +530,22 @@ def main(continuation_probability, mistake_probability):
     # Create an instance of the Payoff Matrix
     payoff_matrix = PrisonersDilemmaPayoff()
 
-    # Print headers for the results
-    print("Continuation probability: " + str(continuation_probability))
-    print("Mistake probability: " + str(mistake_probability))
-    print("strategyone, strategytwo, payoff")
+    # Create a file to output to
+    with open("results_" + str(continuation_probability) + "_" + str(mistake_probability), "w"):
 
-    # Iterate through each pair of strategies
-    for strategy_one in strategy_list:
-        for strategy_two_ in strategy_list:
-            # Compute the result
-            result = simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
-                                     mistake_probability, trials=TRIALS)
-            # Print the strategies and the results
-            print(str(strategy_one) + "," + str(strategy_two) + "," + str(result))
+        # Print headers for the results
+        print("Continuation probability: " + str(continuation_probability))
+        print("Mistake probability: " + str(mistake_probability))
+        print("strategyone, strategytwo, payoff")
+
+        # Iterate through each pair of strategies
+        for strategy_one in strategy_list:
+            for strategy_two_ in strategy_list:
+                # Compute the result
+                result = simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
+                                         mistake_probability, trials=TRIALS)
+                # Print the strategies and the results
+                print(str(strategy_one) + "," + str(strategy_two) + "," + str(result))
 
 
 if __name__ == '__main__':
