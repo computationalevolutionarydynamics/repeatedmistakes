@@ -540,7 +540,7 @@ def main(continuation_probability, mistake_probability):
 
         # Iterate through each pair of strategies
         for strategy_one in strategy_list:
-            for strategy_two_ in strategy_list:
+            for strategy_two in strategy_list:
                 # Compute the result
                 result = simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
                                          mistake_probability, trials=TRIALS)
