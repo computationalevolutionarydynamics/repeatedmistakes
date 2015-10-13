@@ -6,6 +6,7 @@ of histories and possibly other functions down the track
 """
 from abc import abstractmethod
 
+
 class InvalidActionError(BaseException):
     pass
 
@@ -63,8 +64,8 @@ class Strategy():
             raise InvalidActionError("Action must be either " + str(self.C) + " or " + str(self.D))
 
         if len(opponent_history) != len(self.history):
-            raise HistoryLengthMismatch("Internal history was of length " + str(len(self.history)) + " and opponent" \
-                                        + " history was of length " + str(len(opponent_history)))
+            raise HistoryLengthMismatch("Internal history was of length " + str(len(self.history)) + " and opponent" +
+                                        " history was of length " + str(len(opponent_history)))
 
         action = self._strategy(opponent_history)
         return action
