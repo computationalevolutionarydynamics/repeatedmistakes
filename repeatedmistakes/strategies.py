@@ -253,6 +253,28 @@ class WSLS(Strategy):
                 # Lose, so shift
                 return self.C
 
+
+class TFNT(Strategy):
+    """
+    A class that implements the Tit for N Tats strategy. If there is a C in the last n rounds, else defect.
+
+    Args:
+        n (int): The number of rounds to check for a cooperation
+    """
+    def __init__(self, n):
+        super().__init__(self)
+        self.n = n
+
+    def _strategy(self, opponent_history):
+        # Take a slice of the opponent's last history
+        recent_history = opponent_history[-self.n:]
+
+        # See if there is a C in the recent history
+        if self.C in recent_history:
+            return self.C
+        else:
+            return self.D
+
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
                  SuspiciousAllC, Grim, WSLS]
