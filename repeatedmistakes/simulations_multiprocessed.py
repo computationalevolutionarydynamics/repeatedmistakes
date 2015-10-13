@@ -11,8 +11,9 @@ from functools import partial
 
 TRIAL_INCREMENT = 1000
 
+
 def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
-                               mistake_probability=0., trials=1000, estimator_stdev=None):
+                    mistake_probability=0., trials=1000, estimator_stdev=None):
     """
     Calculate the normalised payoff for each strategy in the iterated prisoner's dilemma
 
