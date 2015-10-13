@@ -20,6 +20,9 @@ batchFolder=JobFiles
 # files as well as the batch file
 rm -r ./$batchFolder ; mkdir ./$batchFolder
 
+# Make a folder for results
+mkdir results
+
 # echo the shebang line to the batch file
 echo "#!/bin/sh" >> ./$batchFolder/$batchFile
 

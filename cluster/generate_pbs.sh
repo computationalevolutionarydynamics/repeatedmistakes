@@ -17,9 +17,10 @@ cat << EOF
 #PBS -o simulations_$delta_$gamma
 #PBS -e simulations_$delta_$gamma_error
 #PBS -l ncpus=8
+cd ~/test/results
 echo "Current working directory is `pwd`"
 echo "Starting run "$0" at: `date`"
 module load python/3.4.3
-python3 simulation.py $delta $gamma
+python3 ../simulation.py $delta $gamma
 echo "Program "$0" finished with exit code $? at: `date`"
 EOF
