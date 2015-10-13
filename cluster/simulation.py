@@ -536,7 +536,7 @@ def main(continuation_probability, mistake_probability):
         # Print headers for the results
         print("Continuation probability: " + str(continuation_probability), file=file)
         print("Mistake probability: " + str(mistake_probability), file=file)
-        print("strategyone, strategytwo, payoff", file=file)
+        print("strategyone,strategytwo,payoff", file=file)
 
         # Iterate through each pair of strategies
         for strategy_one in strategy_list:
