@@ -531,12 +531,12 @@ def main(continuation_probability, mistake_probability):
     payoff_matrix = PrisonersDilemmaPayoff()
 
     # Create a file to output to
-    with open("results_" + str(continuation_probability) + "_" + str(mistake_probability), "w"):
+    with open("results_" + str(continuation_probability) + "_" + str(mistake_probability), "w") as file:
 
         # Print headers for the results
-        print("Continuation probability: " + str(continuation_probability))
-        print("Mistake probability: " + str(mistake_probability))
-        print("strategyone, strategytwo, payoff")
+        print("Continuation probability: " + str(continuation_probability), file=file)
+        print("Mistake probability: " + str(mistake_probability), file=file)
+        print("strategyone, strategytwo, payoff", file=file)
 
         # Iterate through each pair of strategies
         for strategy_one in strategy_list:
@@ -545,7 +545,7 @@ def main(continuation_probability, mistake_probability):
                 result = simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
                                          mistake_probability, trials=TRIALS)
                 # Print the strategies and the results
-                print(str(strategy_one) + "," + str(strategy_two) + "," + str(result))
+                print(str(strategy_one) + "," + str(strategy_two) + "," + str(result), file=file)
 
 
 if __name__ == '__main__':
