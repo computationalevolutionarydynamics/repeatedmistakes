@@ -253,7 +253,6 @@ class WSLS(Strategy):
                 # Lose, so shift
                 return self.C
 
-
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
-                 SuspiciousAllC]
+                 SuspiciousAllC, Grim, WSLS]
