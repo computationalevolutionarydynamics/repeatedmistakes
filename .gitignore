@@ -165,3 +165,6 @@ Session.vim
 .idea/*.*
 
 .DS_Store
+
+# Ignore hypothesis
+.hypothesis/*

@@ -218,6 +218,42 @@ class SuspiciousAllC(Strategy):
             return self.C
 
 
+class Grim(Strategy):
+    """
+    A class implementing the Grim strategy. This strategy cooperates until the first defection, the defects forever.
+    """
+    def _strategy(self, opponent_history):
+        # Check whether the opponent has defected
+        if self.D in opponent_history:
+            return self.D
+        else:
+            return self.C
+
+
+class WSLS(Strategy):
+    """
+    A class implementing the Win Stay Lose Shift strategy. If the result is a CC or a DC, they will stay with their
+    current move. If it's a DD or a CD they will shift to the other move.
+    """
+    def _strategy(self, opponent_history):
+        # Enumerate the possibilities
+        if self.history[-1] == self.C:
+            if opponent_history[-1] == self.C:
+                # Win, so stay
+                return self.C
+            else:
+                # Lose, so shift
+                return self.D
+        # We played a D
+        else:
+            if opponent_history[-1] == self.C:
+                # Win, so stay
+                return self.D
+            else:
+                # Lose, so shift
+                return self.C
+
+
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
                  SuspiciousAllC]
