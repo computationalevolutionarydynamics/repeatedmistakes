@@ -237,7 +237,7 @@ class WSLS(Strategy):
     """
     def _strategy(self, opponent_history):
         # Cooperate in the first round
-        if len(self.history == 0):
+        if len(self.history) == 0:
             return self.C
         else:
             # Enumerate the possibilities
@@ -265,13 +265,13 @@ class TFNT(Strategy):
     Args:
         n (int): The number of rounds to check for a cooperation
     """
-    def __init__(self, n):
-        super().__init__(self)
+    def __init__(self, C='C', D='D', n=2):
+        Strategy.__init__(self, C, D)
         self.n = n
 
     def _strategy(self, opponent_history):
         # If the strategy's history is less than n, cooperate
-        if len(self.history < self.n):
+        if len(self.history) < self.n:
             return self.C
         else:
             # Take a slice of the opponent's last history
@@ -280,9 +280,6 @@ class TFNT(Strategy):
             # See if there is a C in the recent history
             if self.C in recent_history:
                 return self.C
-            else:
-                return self.D
-
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
                  SuspiciousAllC, Grim, WSLS]
