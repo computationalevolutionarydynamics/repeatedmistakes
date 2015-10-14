@@ -13,18 +13,8 @@ mistakeProbability=(0.1 0.01 0.001 0.0001)
 # Define then name of the batchfile
 batchFile=batch_file.sh
 
-# Define the folder to output to
-batchFolder=JobFiles
-
-# Remove existing folder with job files and make a folder for all of the job
-# files as well as the batch file
-rm -r ./$batchFolder ; mkdir ./$batchFolder
-
-# Make a folder for results
-mkdir results
-
 # echo the shebang line to the batch file
-echo "#!/bin/sh" >> ./$batchFolder/$batchFile
+echo "#!/bin/sh" >> $batchFile
 
 # Loop over each of the values in each array, generating a pbs file for each
 # set of values
@@ -35,8 +25,8 @@ do
         # Generate the filename for the jobfile
         filename=job_$contProb\_$mistakeProb.pbs
         # Generate the job file
-        ./generate_pbs.sh $contProb $mistakeProb >> ./$batchFolder/$filename
+        ./generate_pbs.sh $contProb $mistakeProb >> $filename
         # Add the qsub command for the job file to a batch file
-        echo "qsub $filename" >> ./$batchFolder/$batchFile
+        echo "qsub $filename" >> $batchFile
     done
 done
