@@ -420,7 +420,7 @@ class WSLS(Strategy):
     """
     def _strategy(self, opponent_history):
         # Cooperate in the first round
-        if len(self.history == 0):
+        if len(self.history) == 0:
             return self.C
         else:
             # Enumerate the possibilities
@@ -454,7 +454,7 @@ class TFNT(Strategy):
 
     def _strategy(self, opponent_history):
         # If the strategy's history is less than n, cooperate
-        if len(self.history < self.n):
+        if len(self.history) < self.n:
             return self.C
         else:
             # Take a slice of the opponent's last history
