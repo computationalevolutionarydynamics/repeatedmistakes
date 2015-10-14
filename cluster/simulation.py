@@ -10,8 +10,8 @@ from multiprocessing import Pool, cpu_count, Manager
 from functools import partial
 import argparse
 
-TRIAL_INCREMENT = 10000
-TRIALS = 1e6
+TRIAL_INCREMENT = 1000
+TRIALS = 1000
 
 
 def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
@@ -419,22 +419,26 @@ class WSLS(Strategy):
     current move. If it's a DD or a CD they will shift to the other move.
     """
     def _strategy(self, opponent_history):
-        # Enumerate the possibilities
-        if self.history[-1] == self.C:
-            if opponent_history[-1] == self.C:
-                # Win, so stay
-                return self.C
-            else:
-                # Lose, so shift
-                return self.D
-        # We played a D
+        # Cooperate in the first round
+        if len(self.history == 0):
+            return self.C
         else:
-            if opponent_history[-1] == self.C:
-                # Win, so stay
-                return self.D
+            # Enumerate the possibilities
+            if self.history[-1] == self.C:
+                if opponent_history[-1] == self.C:
+                    # Win, so stay
+                    return self.C
+                else:
+                    # Lose, so shift
+                    return self.D
+            # We played a D
             else:
-                # Lose, so shift
-                return self.C
+                if opponent_history[-1] == self.C:
+                    # Win, so stay
+                    return self.D
+                else:
+                    # Lose, so shift
+                    return self.C
 
 
 class TFNT(Strategy):
@@ -444,19 +448,23 @@ class TFNT(Strategy):
     Args:
         n (int): The number of rounds to check for a cooperation
     """
-    def __init__(self, n=2):
+    def __init__(self, n):
         super().__init__(self)
         self.n = n
 
     def _strategy(self, opponent_history):
-        # Take a slice of the opponent's last history
-        recent_history = opponent_history[-self.n:]
-
-        # See if there is a C in the recent history
-        if self.C in recent_history:
+        # If the strategy's history is less than n, cooperate
+        if len(self.history < self.n):
             return self.C
         else:
-            return self.D
+            # Take a slice of the opponent's last history
+            recent_history = opponent_history[-self.n:]
+
+            # See if there is a C in the recent history
+            if self.C in recent_history:
+                return self.C
+            else:
+                return self.D
 
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
