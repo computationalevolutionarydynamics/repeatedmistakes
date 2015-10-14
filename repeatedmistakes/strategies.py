@@ -270,14 +270,18 @@ class TFNT(Strategy):
         self.n = n
 
     def _strategy(self, opponent_history):
-        # Take a slice of the opponent's last history
-        recent_history = opponent_history[-self.n:]
-
-        # See if there is a C in the recent history
-        if self.C in recent_history:
+        # If the strategy's history is less than n, cooperate
+        if len(self.history < self.n):
             return self.C
         else:
-            return self.D
+            # Take a slice of the opponent's last history
+            recent_history = opponent_history[-self.n:]
+
+            # See if there is a C in the recent history
+            if self.C in recent_history:
+                return self.C
+            else:
+                return self.D
 
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
