@@ -1,9 +1,0 @@
-#!/bin/sh
-#PBS -S /bin/sh
-#PBS -m bea
-#PBS -l mem=1000mb
-echo "Current working directory is `pwd`"
-echo "Starting run "$0" at: `date`"
-module load python/3.4.3
-python3 simulation.py no_mutation_period_10_ios_1.0_rep_6.json
-echo "Program "$0" finished with exit code $? at: `date`"
