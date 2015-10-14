@@ -236,22 +236,26 @@ class WSLS(Strategy):
     current move. If it's a DD or a CD they will shift to the other move.
     """
     def _strategy(self, opponent_history):
-        # Enumerate the possibilities
-        if self.history[-1] == self.C:
-            if opponent_history[-1] == self.C:
-                # Win, so stay
-                return self.C
-            else:
-                # Lose, so shift
-                return self.D
-        # We played a D
+        # Cooperate in the first round
+        if len(self.history == 0):
+            return self.C
         else:
-            if opponent_history[-1] == self.C:
-                # Win, so stay
-                return self.D
+            # Enumerate the possibilities
+            if self.history[-1] == self.C:
+                if opponent_history[-1] == self.C:
+                    # Win, so stay
+                    return self.C
+                else:
+                    # Lose, so shift
+                    return self.D
+            # We played a D
             else:
-                # Lose, so shift
-                return self.C
+                if opponent_history[-1] == self.C:
+                    # Win, so stay
+                    return self.D
+                else:
+                    # Lose, so shift
+                    return self.C
 
 
 class TFNT(Strategy):
