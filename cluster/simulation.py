@@ -553,7 +553,7 @@ def main(continuation_probability, mistake_probability):
                 result = simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,
                                          mistake_probability, trials=TRIALS)
                 # Print the strategies and the results
-                print(str(strategy_one) + "," + str(strategy_two) + "," + str(result), file=file)
+                print(str(strategy_one.__name__) + "," + str(strategy_two.__name__) + "," + str(result), file=file)
 
 
 if __name__ == '__main__':
