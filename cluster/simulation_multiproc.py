@@ -9,9 +9,10 @@ from math import sqrt
 from multiprocessing import Pool, cpu_count, Manager
 from functools import partial
 import argparse
+import time
 
 TRIAL_INCREMENT = 1000
-TRIALS = 1000
+TRIALS = 1000000
 
 
 def simulate_payoff(strategy_one, strategy_two, payoff_matrix, continuation_probability,

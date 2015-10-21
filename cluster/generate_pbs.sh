@@ -11,13 +11,14 @@ gamma=$2    # The mistake probability
 # Define the template.
 cat << EOF
 #!/bin/sh
-#PBS -S /bin/sh
-#PBS -m bea
-#PBS -l mem=1000mb
-#PBS -l ncpus=8
-echo "Current working directory is `pwd`"
-echo "Starting run "$0" at: `date`"
+#$ -S /bin/sh
+#$ -m bea
+#$ -M nmsko2@student.monash.edu
+#$ -l h_vmem=8G
+#$ -pe smp 8
+echo "Current working directory is \`pwd\`"
+echo "Starting run "\$0" at: \`date\`"
 module load python/3.4.3
 python3 simulation.py $delta $gamma
-echo "Program "$0" finished with exit code $? at: `date`"
+echo "Program "\$0" finished with exit code \$? at: \`date\`"
 EOF
