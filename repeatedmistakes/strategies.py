@@ -280,5 +280,8 @@ class TFNT(Strategy):
             # See if there is a C in the recent history
             if self.C in recent_history:
                 return self.C
+            else:
+                return self.D
+
 # Keep a list of all of the strategies
 strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD, SuspiciousAllC, Grim, WSLS, TFNT]
