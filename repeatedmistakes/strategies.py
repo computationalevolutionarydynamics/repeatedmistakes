@@ -281,5 +281,4 @@ class TFNT(Strategy):
             if self.C in recent_history:
                 return self.C
 # Keep a list of all of the strategies
-strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD,
-                 SuspiciousAllC, Grim, WSLS]
+strategy_list = [AllC, AllD, TitForTat, InverseTitForTat, SuspiciousTitForTat, SuspiciousInverseTitForTat, NiceAllD, SuspiciousAllC, Grim, WSLS, TFNT]
