@@ -1,7 +1,6 @@
 from repeatedmistakes.strategies import strategy_list
 from repeatedmistakes.repeatedgame import PrisonersDilemmaPayoff
 from repeatedmistakes.calculations import calculate_payoff_with_mistakes
-import itertools
 
 def main():
     """
@@ -30,12 +29,9 @@ def main():
                     print("Continuation prob: " + str(continuation_probability), file=file)
                     print("Mistake prob: " + str(mistake_probability), file=file)
 
-                    # Spin up some iterators
-                    list_one, list_two = itertools.tee(strategy_list, n=2)
-
                     # For each pair of strategies
-                    for strategy_one in list_one:
-                        for strategy_two in list_two:
+                    for strategy_one in iter(strategy_list):
+                        for strategy_two in iter(strategy_list):
 
                             # Compute the result
                             results = calculate_payoff_with_mistakes(strategy_one, strategy_two, PrisonersDilemmaPayoff(),
