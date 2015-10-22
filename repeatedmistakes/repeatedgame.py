@@ -123,7 +123,7 @@ class PrisonersDilemmaPayoff(PayoffMatrix):
         T (float): The temptation the defector receives if the other player cooperates
         S (float): The sucker prize the cooperator receives if the other player defects
     """
-    def __init__(self, C='C', D='D', P=1, R=2, S=0, T=3):
+    def __init__(self, C='C', D='D', P=2.0, R=4.0, S=0.0, T=6.0):
         super().__init__(C=C, D=D, CC=(R,R), CD=(S,T), DC=(T,S), DD=(P,P))
         self.P = P
         self.T = T
